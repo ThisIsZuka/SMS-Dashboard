@@ -92,8 +92,7 @@
             </div>
 
             <div class="container-fluid">
-                <button id="testbrn">456</button>
-                <button id="Get_cookie">Get_cookie</button>
+                <button id="testbrn">taest</button>
             </div>
 
             <footer class="footer text-center">
@@ -113,20 +112,5 @@
         $('#testbrn').on('click', function() {
             $(".background_loading").css('display', 'block');
         })
-
-        $('#Get_cookie').click(function() {
-            axios({
-                    method: 'POST',
-                    url: 'get_cookie',
-                    data: {
-                        cookie: ['SMS_Username_Permission', 'SMS_Username_server'],
-                    }
-                }).then(function(response) {
-                    console.log(response);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        });
     })
 </script>

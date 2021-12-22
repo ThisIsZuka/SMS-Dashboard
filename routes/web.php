@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cookie;
 
 use App\Http\Controllers\PageLogin_Controller;
-
+use App\Http\Controllers\Cookie_Controller;
 
 
 /*
@@ -26,12 +26,11 @@ use App\Http\Controllers\PageLogin_Controller;
 
 Route::get('/login', function () {
     // dd(request()->cookie('SMS_Username_server'));
-    if(request()->cookie('SMS_Username_server') == null){
+    if (request()->cookie('SMS_Username_server') == null) {
         return view('login');
-    }else{
+    } else {
         return redirect()->route('home');
     }
-    
 })->name('login');
 
 
@@ -40,6 +39,7 @@ Route::post('/Login_user', [PageLogin_Controller::class, 'Login_user']);
 
 Route::get('/logout', function () {
     Cookie::queue(Cookie::forget('SMS_Username_server'));
+    Cookie::queue(Cookie::forget('SMS_Username_Permission'));
     return redirect()->route('login');
 })->name('logout');
 
@@ -53,9 +53,20 @@ Route::group(['middleware' => ['authLogin']], function () {
         return view('Profile');
     });
 
+    Route::post('/get_cookie', [Cookie_Controller::class, 'Get_cookieByName']);
+
+    Route::group(['middleware' => ['authAdmin']], function () {
+        Route::get('Ta', function () {
+            return view('Ta');
+        });
+    });
 });
 
 
 Route::get('page_404', function () {
-    return view('Template/Page404');
+    return view('Error/Page404');
 });
+
+// Route::get('page_403', function () {
+//     return view('Error/Page403');
+// });
