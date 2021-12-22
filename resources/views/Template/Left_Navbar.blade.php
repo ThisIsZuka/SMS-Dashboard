@@ -83,7 +83,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link" aria-expanded="false"
-                        href="{{ url('/ta') }}">
+                        href="{{ url('/Ta') }}">
                         <i class="me-3 fa fa-table" aria-hidden="true"></i>
                         <span class="hide-menu">Table</span>
                     </a>

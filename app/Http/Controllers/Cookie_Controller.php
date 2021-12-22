@@ -13,25 +13,33 @@ use Exception;
 use Illuminate\Support\Facades\Cookie;
 
 
-class PageLogin_Controller extends BaseController
+class Cookie_Controller extends BaseController
 {
 
-    public function Login_user(Request $request)
+    public function Get_cookieByName(Request $request)
     {
         try {
 
             $data = $request->all();
             $return_data = new \stdClass();
+            // dd(count($data['cookie']));
+            $obj_cookie = new \stdClass();
 
-            $minutes = 540;
-            Cookie::queue('SMS_Username_server', $data['username'], $minutes);
-            if($data['username'] == 'admin'){
-                Cookie::queue('SMS_Username_Permission', 'admin', $minutes);
-            }else{
-                Cookie::queue('SMS_Username_Permission', 'user', $minutes);
+            $list_value=array();
+
+            for($i = 0 ; $i < count($data['cookie']); $i++){
+                
+                $obj_cookie = new \stdClass();
+                $obj_cookie->name = $data['cookie'][$i];
+                $obj_cookie->value = $request->cookie($data['cookie'][$i]);
+
+                array_push($list_value, $obj_cookie);
             }
             
+           
+            // dd($value);
 
+            $return_data->data = $list_value;
             $return_data->code = '999999';
             $return_data->message = 'Sucsess';
 
