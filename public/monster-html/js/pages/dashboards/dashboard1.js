@@ -11,14 +11,15 @@ $(function () {
     // ============================================================== 
 
     var offset = 0;
+    var offsetTT = -3.5;
     plot();
 
     function plot() {
         var sin = [],
             cos = [];
         for (var i = 0; i < 12; i += 0.2) {
-            sin.push([i, Math.sin(i + offset)]);
-            cos.push([i, Math.cos(i + offset)]);
+            sin.push([i, Math.sin(i - offset)]);
+            cos.push([i, Math.cos(i + offsetTT)]);
         }
         var options = {
             series: {

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cookie;
 
 use App\Http\Controllers\PageLogin_Controller;
 use App\Http\Controllers\Cookie_Controller;
-
+use App\Http\Controllers\API_Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +53,12 @@ Route::group(['middleware' => ['authLogin']], function () {
         return view('Profile');
     });
 
+    Route::get('Map', function () {
+        return view('Map');
+    });
+
+    Route::get('/SMS_Check_Credit', [API_Service::class, 'SMS_Check_Credit']);
+
     Route::post('/get_cookie', [Cookie_Controller::class, 'Get_cookieByName']);
 
     Route::group(['middleware' => ['authAdmin']], function () {
@@ -70,3 +76,10 @@ Route::get('page_404', function () {
 // Route::get('page_403', function () {
 //     return view('Error/Page403');
 // });
+
+
+// SMS Mailbit API
+Route::get('/send_SMS_Invoice', [API_Service::class, 'submit_send_SMS_Invoice']);
+
+
+Route::get('/test_send_SMS', [API_Service::class, 'test_send_SMS']);

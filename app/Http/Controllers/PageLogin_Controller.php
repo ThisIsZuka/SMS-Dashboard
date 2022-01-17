@@ -23,7 +23,7 @@ class PageLogin_Controller extends BaseController
             $data = $request->all();
             $return_data = new \stdClass();
 
-            $minutes = 540;
+            $minutes = 180;
             Cookie::queue('SMS_Username_server', $data['username'], $minutes);
             if($data['username'] == 'admin'){
                 Cookie::queue('SMS_Username_Permission', 'admin', $minutes);

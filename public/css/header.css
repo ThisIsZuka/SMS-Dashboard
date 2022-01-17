@@ -15,6 +15,25 @@
     }
 }
 
+@media only screen and (min-width : 768px) {
+    .logo-icon{
+        display: none;
+    }
+}
+
+@media only screen and (min-width : 1170px) {
+    .logo-icon{
+        display: block;
+    }
+}
+
+
+
+@media only screen and (max-width : 1170px) {
+    .sidebar-nav ul .sidebar-item{
+        width: auto !important;
+    }
+}
 
 
 /* Loading */

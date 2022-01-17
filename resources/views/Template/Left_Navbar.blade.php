@@ -91,9 +91,12 @@
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                         aria-expanded="false"><i class="me-3 fa fa-font" aria-hidden="true"></i><span
                             class="hide-menu">Icon</span></a></li>
-                <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                        aria-expanded="false"><i class="me-3 fa fa-globe" aria-hidden="true"></i><span
-                            class="hide-menu">Google Map</span></a></li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" aria-expanded="false"  href="{{ url('/Map') }}">
+                        <i class="me-3 fa fa-globe" aria-hidden="true"></i>
+                        <span class="hide-menu">Google Map</span>
+                    </a>
+                </li>
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                         aria-expanded="false"><i class="me-3 fa fa-columns" aria-hidden="true"></i><span
                             class="hide-menu">Blank</span></a></li>
@@ -101,8 +104,8 @@
                         href="{{ url('/page_404') }}" aria-expanded="false"><i class="me-3 fa fa-info-circle"
                             aria-hidden="true"></i><span class="hide-menu">Error 404</span></a></li>
                 <li class="text-center p-20 upgrade-btn">
-                        <a href="{{ url('/logout') }}" class="btn btn-danger text-white mt-4">Logout</a>
-                    </li>
+                    <a href="{{ url('/logout') }}" class="btn btn-danger text-white mt-4">Logout</a>
+                </li>
             </ul>
 
         </nav>
