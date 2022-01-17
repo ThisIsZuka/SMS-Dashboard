@@ -92,7 +92,7 @@
             </div>
 
             <div class="container-fluid">
-                <button id="testbrn">456</button>
+                <button id="testbrn">Test SMS</button>
                 <button id="Get_cookie">Get_cookie</button>
             </div>
 
@@ -109,10 +109,31 @@
 
 <script>
     $(document).ready(function() {
-
+        http://ufund-portal.webhop.biz:9090/SMS-Dashboard/send_SMS_Invoice?PHONE=..&QUOTATION_ID=..&APP_ID=..&INVOICE_ID=..&CONTRACT_ID=..&DUE_DATE=..
         $('#testbrn').on('click', function() {
-            $(".background_loading").css('display', 'block');
+            // $(".background_loading").css('display', 'block');
+            axios({
+                    method: 'GET',
+                    url: 'test_send_SMS',
+                    params: {
+                        PHONE: '66xxxxx',
+                        APP_ID : '123456',
+                        QUOTATION_ID : '123456',
+                        INVOICE_ID : '123456',
+                        CONTRACT_ID:'123456',
+                        TYPE: 'INVOICE',
+                        DUE_DATE:'2022-01-01',
+                        INV_DATE:'2022-01-01',
+                        TRANSECTION_ID : '124564'
+                    }
+                }).then(function(response) {
+                    console.log(response);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         })
+
 
         $('#Get_cookie').click(function() {
             axios({

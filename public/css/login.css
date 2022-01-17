@@ -36,7 +36,7 @@
 
 .card_bg {
     /* border: 4px solid black; */
-    padding: 15px;
+    padding: 60px;
     background: #0000009e;
     background-clip: padding-box;
     border-radius: 15px;
@@ -84,6 +84,10 @@ input[type=number] {
     .centered {
         top: 48%;
     }
+
+    .card_bg {
+        padding: 15px;
+    }
 }
 
 
@@ -94,6 +98,20 @@ input[type=number] {
         width: 95% !important;
     }
 
+}
+
+
+/* Change Autocomplete styles in Chrome*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgb(245, 245, 245);
 }
 
 

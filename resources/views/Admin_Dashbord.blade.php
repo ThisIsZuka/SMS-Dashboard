@@ -55,6 +55,7 @@
     <!--Custom JavaScript -->
     <script src={{ asset('monster-html/js/custom.js') }}></script>
     <!--This page JavaScript -->
+    <script src={{ asset('monster-html/js/pages/dashboards/dashboard1.js') }}></script>
     <!--flot chart-->
     <script src={{ asset('monster-html/plugins/flot/jquery.flot.js') }}></script>
     <script src={{ asset('monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
@@ -121,17 +122,17 @@
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Daily Sales</h4>
-                                <div class="text-end">
-                                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> $120</h2>
-                                    <span class="text-muted">Todays Income</span>
+                                <h4 class="card-title">SMS Credit ที่เหลือ</h4>
+                                <div class="text-center">
+                                    <h2 class="font-light mb-0" id="txt_sms_credit"> </h2>
+                                    <span class="text-muted">SMS</span>
                                 </div>
-                                <span class="text-success">80%</span>
+                                {{-- <span class="text-success">80%</span>
                                 <div class="progress">
                                     <div class="progress-bar bg-success" role="progressbar"
                                         style="width: 80%; height: 6px;" aria-valuenow="25" aria-valuemin="0"
                                         aria-valuemax="100"></div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -140,17 +141,17 @@
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Weekly Sales</h4>
-                                <div class="text-end">
-                                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i> $5,000</h2>
-                                    <span class="text-muted">Todays Income</span>
+                                <h4 class="card-title">SMS ที่ใช้ไป</h4>
+                                <div class="text-center">
+                                    <h2 class="font-light mb-0"><i class="ti-arrow-down text-danger"></i> $5,000</h2>
+                                    <span class="text-muted">SMS</span>
                                 </div>
-                                <span class="text-info">30%</span>
+                                {{-- <span class="text-info">30%</span>
                                 <div class="progress">
                                     <div class="progress-bar bg-info" role="progressbar"
                                         style="width: 30%; height: 6px;" aria-valuenow="25" aria-valuemin="0"
                                         aria-valuemax="100"></div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -184,8 +185,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-md-flex">
-                                    <h4 class="card-title col-md-10 mb-md-0 mb-3 align-self-center">Projects of the
-                                        Month</h4>
+                                    <h4 class="card-title col-md-10 mb-md-0 mb-3 align-self-center">SMS Detail</h4>
                                     <div class="col-md-2 ms-auto">
                                         <select class="form-select shadow-none col-md-2 ml-auto">
                                             <option selected>January</option>
@@ -199,28 +199,24 @@
                                     <table class="table stylish-table no-wrap">
                                         <thead>
                                             <tr>
-                                                <th class="border-top-0" colspan="2">Assigned</th>
-                                                <th class="border-top-0">Name</th>
-                                                <th class="border-top-0">Budget</th>
+                                                <th class="border-top-0" colspan="2">Type</th>
+                                                <th class="border-top-0">จำนวน (SMS)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td style="width:50px;"><span class="round">S</span></td>
+                                                <td style="width:50px;"><span class="round">Inv</span></td>
                                                 <td class="align-middle">
                                                     <h6>Sunil Joshi</h6><small class="text-muted">Web
                                                         Designer</small>
                                                 </td>
-                                                <td class="align-middle">Elite Admin</td>
                                                 <td class="align-middle">$3.9K</td>
                                             </tr>
                                             <tr class="active">
-                                                <td><span class="round"><img src="../assets/images/users/2.jpg"
-                                                            alt="user" width="50"></span></td>
+                                                <td style="width:50px;"><span class="round">Inv</span></td>
                                                 <td class="align-middle">
                                                     <h6>Andrew</h6><small class="text-muted">Project Manager</small>
                                                 </td>
-                                                <td class="align-middle">Real Homes</td>
                                                 <td class="align-middle">$23.9K</td>
                                             </tr>
                                             <tr>
@@ -229,7 +225,6 @@
                                                     <h6>Bhavesh patel</h6><small
                                                         class="text-muted">Developer</small>
                                                 </td>
-                                                <td class="align-middle">MedicalPro Theme</td>
                                                 <td class="align-middle">$12.9K</td>
                                             </tr>
                                             <tr>
@@ -238,7 +233,6 @@
                                                     <h6>Nirav Joshi</h6><small class="text-muted">Frontend
                                                         Eng</small>
                                                 </td>
-                                                <td class="align-middle">Elite Admin</td>
                                                 <td class="align-middle">$10.9K</td>
                                             </tr>
                                             <tr>
@@ -247,7 +241,6 @@
                                                     <h6>Micheal Doe</h6><small class="text-muted">Content
                                                         Writer</small>
                                                 </td>
-                                                <td class="align-middle">Helping Hands</td>
                                                 <td class="align-middle">$12.9K</td>
                                             </tr>
                                             <tr>
@@ -255,7 +248,6 @@
                                                 <td class="align-middle">
                                                     <h6>Johnathan</h6><small class="text-muted">Graphic</small>
                                                 </td>
-                                                <td class="align-middle">Digital Agency</td>
                                                 <td class="align-middle">$2.6K</td>
                                             </tr>
                                         </tbody>
@@ -275,7 +267,10 @@
                     <!-- Column -->
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img class="card-img-top img-responsive" src="../assets/images/big/img1.jpg" alt="Card">
+                            <div class="text-center">
+                                <img class="card-img-top img-responsive w-50 p-3"
+                                    src="{{ asset('images/QR_Code.png') }}" alt="Card">
+                            </div>
                             <div class="card-body">
                                 <ul class="list-inline d-flex align-items-center">
                                     <li class="ps-0">20 May 2021</li>
@@ -290,7 +285,10 @@
                     <!-- Column -->
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img class="card-img-top img-responsive" src="../assets/images/big/img2.jpg" alt="Card">
+                            <div class="text-center">
+                                <img class="card-img-top img-responsive w-50 p-3"
+                                    src="{{ asset('images/UFUND.png') }}" alt="Card">
+                            </div>
                             <div class="card-body">
                                 <ul class="list-inline d-flex align-items-center">
                                     <li class="ps-0">20 May 2021</li>
@@ -305,7 +303,10 @@
                     <!-- Column -->
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img class="card-img-top img-responsive" src="../assets/images/big/img4.jpg" alt="Card">
+                            <div class="text-center">
+                                <img class="card-img-top img-responsive w-50 p-3"
+                                    src="{{ asset('images/QR_Code.png') }}" alt="Card">
+                            </div>
                             <div class="card-body">
                                 <ul class="list-inline d-flex align-items-center">
                                     <li class="ps-0">20 May 2021</li>
@@ -341,6 +342,26 @@
     </div>
     <!-- End main-wrapper  -->
 
+
+    
+    <div class="modal fade" tabindex="-1" id="Modal_alert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">แจ้งเตือน  [Code : <span id="txt_head_code"></span>] </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="text_alert"> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 
 </html>
@@ -350,7 +371,55 @@
 <script>
     $(document).ready(function() {
 
-        
+        // function start
+        SMS_Check_Credit();
+
+        function SMS_Check_Credit(iurl, id, type, number) {
+            $(".background_loading").css("display", "block");
+            axios({
+                    method: 'GET',
+                    url: 'SMS_Check_Credit',
+                }).then(function(response) {
+                    console.log(response.data.split('#'));
+                    respon = response.data.split('#');
+                    if (respon[0] == 'Success') {
+                        respon = response.data.split(':');
+                        txt_sms_credit = '<i class="ti-arrow-up text-success"></i>' + parseFloat(respon[respon.length - 1]).toFixed(2)
+                        $('#txt_sms_credit').html(txt_sms_credit);
+                    } else {
+                        // Snackbar.show({
+                        //     actionText: 'close',
+                        //     pos: 'top-center',
+                        //     duration: 15000,
+                        //     actionTextColor: '#dc3545',
+                        //     backgroundColor: '#323232',
+                        //     width: 'auto',
+                        //     text: 'ไม่สามารถเชื่อมต่อกับ Mailbit ได้'
+                        // });
+                        $('#text_alert').css('color', 'red')
+                        $('#text_alert').text('ไม่สามารถเชื่อมต่อกับ Mailbit ได้ : '+respon[1])
+                        $('#txt_head_code').text(respon[0])
+                        $('#Modal_alert').modal('show')
+
+                        $('#txt_sms_credit').css('color', 'red')
+                        $('#txt_sms_credit').html('Error');
+                    }
+                    $(".background_loading").css("display", "none");
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    Snackbar.show({
+                        actionText: 'close',
+                        pos: 'top-center',
+                        duration: 15000,
+                        actionTextColor: '#dc3545',
+                        backgroundColor: '#323232',
+                        width: 'auto',
+                        text: error
+                    });
+                });
+
+        }
 
 
     });
