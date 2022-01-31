@@ -1,0 +1,12 @@
+.datepicker-inline {
+    display: none;
+}
+
+.Zebra_DatePicker_Icon_Wrapper {
+    width: auto !important;
+}
+
+.Zebra_DatePicker_Icon {
+    top: 6px !important;
+    right: 8px !important;
+}

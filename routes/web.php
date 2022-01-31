@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\PageLogin_Controller;
 use App\Http\Controllers\Cookie_Controller;
 use App\Http\Controllers\API_Service;
+use App\Http\Controllers\Admin_Dashbord;
+use App\Http\Controllers\Admin_Detail_SMS;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,9 +63,19 @@ Route::group(['middleware' => ['authLogin']], function () {
 
     Route::post('/get_cookie', [Cookie_Controller::class, 'Get_cookieByName']);
 
+
+    Route::post('/SMS_Sender', [Admin_Dashbord::class, 'check_sender']);
+
+    Route::post('/SMS_Sender_type', [Admin_Dashbord::class, 'check_sender_type']);
+
+    Route::post('/list_sms', [Admin_Detail_SMS::class, 'list_sms']);
+
+    Route::post('/SMS_Detail', [Admin_Detail_SMS::class, 'SMS_Detail']);
+
+
     Route::group(['middleware' => ['authAdmin']], function () {
-        Route::get('Ta', function () {
-            return view('Ta');
+        Route::get('Detail_Send_SMS_bill', function () {
+            return view('Detail_Send_SMS_bill');
         });
     });
 });
@@ -80,6 +92,9 @@ Route::get('page_404', function () {
 
 // SMS Mailbit API
 Route::get('/send_SMS_Invoice', [API_Service::class, 'submit_send_SMS_Invoice']);
+
+
+Route::get('/SMS_send_ByType', [API_Service::class, 'SMS_send_ByType']);
 
 
 Route::get('/test_send_SMS', [API_Service::class, 'test_send_SMS']);

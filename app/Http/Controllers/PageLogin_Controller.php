@@ -27,13 +27,14 @@ class PageLogin_Controller extends BaseController
             Cookie::queue('SMS_Username_server', $data['username'], $minutes);
             if($data['username'] == 'admin'){
                 Cookie::queue('SMS_Username_Permission', 'admin', $minutes);
+                $return_data->code = '999999';
+                $return_data->message = 'Sucsess';
             }else{
-                Cookie::queue('SMS_Username_Permission', 'user', $minutes);
+                // Cookie::queue('SMS_Username_Permission', 'user', $minutes);
+                $return_data->code = '890000';
+                $return_data->message = 'Sucsess';
             }
             
-
-            $return_data->code = '999999';
-            $return_data->message = 'Sucsess';
 
             return $return_data;
 

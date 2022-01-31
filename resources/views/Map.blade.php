@@ -13,8 +13,8 @@
     <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.0.2/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.0.2/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
