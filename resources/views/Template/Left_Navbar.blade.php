@@ -76,16 +76,16 @@
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link" aria-expanded="false"
+                        href="{{ url('/Detail_Send_SMS_bill') }}">
+                        <i class="me-3 fa fa-table" aria-hidden="true"></i>
+                        <span class="hide-menu">Detail Send SMS</span>
+                    </a>
+                </li>
+                {{-- <li class="sidebar-item">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" aria-expanded="false"
                         href="{{ url('/profile') }}">
                         <i class="me-3 fa fa-user" aria-hidden="true"></i>
                         <span class="hide-menu">Profile</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" aria-expanded="false"
-                        href="{{ url('/Ta') }}">
-                        <i class="me-3 fa fa-table" aria-hidden="true"></i>
-                        <span class="hide-menu">Table</span>
                     </a>
                 </li>
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -102,7 +102,7 @@
                             class="hide-menu">Blank</span></a></li>
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                         href="{{ url('/page_404') }}" aria-expanded="false"><i class="me-3 fa fa-info-circle"
-                            aria-hidden="true"></i><span class="hide-menu">Error 404</span></a></li>
+                            aria-hidden="true"></i><span class="hide-menu">Error 404</span></a></li> --}}
                 <li class="text-center p-20 upgrade-btn">
                     <a href="{{ url('/logout') }}" class="btn btn-danger text-white mt-4">Logout</a>
                 </li>

@@ -13,8 +13,8 @@
     <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.0.2/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.0.2/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
@@ -92,7 +92,7 @@
         </div>
 
 
-        
+
 
     </div>
 
@@ -121,7 +121,20 @@
                 }).then(function(response) {
                     console.log(response);
                     // $(".background_loading").css("display", "none");
-                    window.location = '{{ url('/') }}';
+                    if (response.data.code == '999999') {
+                        window.location = '{{ url('/') }}';
+                    } else {
+                        Snackbar.show({
+                            actionText: 'close',
+                            pos: 'top-center',
+                            actionTextColor: '#dc3545',
+                            backgroundColor: '#323232',
+                            width: 'auto',
+                            text: 'Login Fail'
+                        });
+                        $(".background_loading").css("display", "none");
+                    }
+
                 })
                 .catch(function(error) {
                     $(".background_loading").css("display", "none");
@@ -139,5 +152,3 @@
         });
     })
 </script>
-
-

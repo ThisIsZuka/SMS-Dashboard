@@ -1,9 +1,42 @@
-.ufound-Navbar-Logo{
-  width: 50%;
+.ufound-Navbar-Logo {
+    width: 50%;
 }
 
 @media only screen and (max-width: 768px) {
-  .error-title{
-    font-size: 120px !important;
-  }
+    .error-title {
+        font-size: 120px !important;
+    }
+}
+
+.table>thead {
+  vertical-align: middle !important;
+}
+
+.table-responsive::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.table-responsive::-webkit-scrollbar:vertical {
+  width: 12px;
+}
+
+.table-responsive::-webkit-scrollbar:horizontal {
+  height: 12px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .5);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  border-radius: 10px;  
+  background-color: #ffffff; 
+}
+
+.form-check-input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 0%) !important;
 }

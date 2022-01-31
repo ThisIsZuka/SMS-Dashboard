@@ -13,8 +13,8 @@
     <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.0.2/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.0.2/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
@@ -82,7 +82,7 @@
                         <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Profile</li>
                                 </ol>
                             </nav>
@@ -92,8 +92,109 @@
             </div>
 
             <div class="container-fluid">
-                <button id="testbrn">Test SMS</button>
+                {{-- <button id="testbrn">Test SMS</button> --}}
                 <button id="Get_cookie">Get_cookie</button>
+
+                <div style="height:30px;overflow:hidden;margin-right:15px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">SMS_ID</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">CONTRACT_ID</th>
+                                <th scope="col">QUOTATION_ID</th>
+                                <th scope="col">APP_ID</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">TRANSECTION_TYPE</th>
+                                <th scope="col">TRANSECTION_ID</th>
+                                <th scope="col">DUE_DATE</th>
+                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
+                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr>
+                                <th scope="col">SMS_ID</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">CONTRACT_ID</th>
+                                <th scope="col">QUOTATION_ID</th>
+                                <th scope="col">APP_ID</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">TRANSECTION_TYPE</th>
+                                <th scope="col">TRANSECTION_ID</th>
+                                <th scope="col">DUE_DATE</th>
+                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
+                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                             </tr>
+                             <tr>
+                                <th scope="col">SMS_ID</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">CONTRACT_ID</th>
+                                <th scope="col">QUOTATION_ID</th>
+                                <th scope="col">APP_ID</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">TRANSECTION_TYPE</th>
+                                <th scope="col">TRANSECTION_ID</th>
+                                <th scope="col">DUE_DATE</th>
+                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
+                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                             </tr>
+                             <tr>
+                                 <td>Cel 3,1</td>
+                                 <td>Cel 3,2</td>
+                                 <td>Cel 3,3</td>
+                             </tr>
+                 
+                 
+                         </tbody>
+                     </table>
+                 </div>
+                 <div style="height:100px;overflow-y:scroll;;">
+                     <table class="table">
+                         <thead>
+                 
+                         </thead>
+                         <tbody>
+                             <tr>
+                                <th scope="col">SMS_ID</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">CONTRACT_ID</th>
+                                <th scope="col">QUOTATION_ID</th>
+                                <th scope="col">APP_ID</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">TRANSECTION_TYPE</th>
+                                <th scope="col">TRANSECTION_ID</th>
+                                <th scope="col">DUE_DATE</th>
+                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
+                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                             </tr>
+                             <tr>
+                                <th scope="col">SMS_ID</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">CONTRACT_ID</th>
+                                <th scope="col">QUOTATION_ID</th>
+                                <th scope="col">APP_ID</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">TRANSECTION_TYPE</th>
+                                <th scope="col">TRANSECTION_ID</th>
+                                <th scope="col">DUE_DATE</th>
+                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
+                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                             </tr>
+                             <tr>
+                                 <td>Cel 3,1</td>
+                                 <td>Cel 3,2</td>
+                                 <td>Cel 3,3</td>
+                             </tr>
+                              <tr style="color:white">
+                                 <th>Col 1</th>
+                                 <th>Col 2</th>
+                                 <th>Col 3</th>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+
             </div>
 
             <footer class="footer text-center">
@@ -109,30 +210,30 @@
 
 <script>
     $(document).ready(function() {
-        http://ufund-portal.webhop.biz:9090/SMS-Dashboard/send_SMS_Invoice?PHONE=..&QUOTATION_ID=..&APP_ID=..&INVOICE_ID=..&CONTRACT_ID=..&DUE_DATE=..
-        $('#testbrn').on('click', function() {
-            // $(".background_loading").css('display', 'block');
-            axios({
-                    method: 'GET',
-                    url: 'test_send_SMS',
-                    params: {
-                        PHONE: '66xxxxx',
-                        APP_ID : '123456',
-                        QUOTATION_ID : '123456',
-                        INVOICE_ID : '123456',
-                        CONTRACT_ID:'123456',
-                        TYPE: 'INVOICE',
-                        DUE_DATE:'2022-01-01',
-                        INV_DATE:'2022-01-01',
-                        TRANSECTION_ID : '124564'
-                    }
-                }).then(function(response) {
-                    console.log(response);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        })
+        // http: //ufund-portal.webhop.biz:9090/SMS-Dashboard/send_SMS_Invoice?PHONE=..&QUOTATION_ID=..&APP_ID=..&INVOICE_ID=..&CONTRACT_ID=..&DUE_DATE=..
+            $('#testbrn').on('click', function() {
+                // $(".background_loading").css('display', 'block');
+                axios({
+                        method: 'GET',
+                        url: 'test_send_SMS',
+                        params: {
+                            PHONE: '66xxxxx',
+                            APP_ID: '123456',
+                            QUOTATION_ID: '123456',
+                            INVOICE_ID: '123456',
+                            CONTRACT_ID: '123456',
+                            TYPE: 'INVOICE',
+                            DUE_DATE: '2022-01-01',
+                            INV_DATE: '2022-01-01',
+                            TRANSECTION_ID: '124564'
+                        }
+                    }).then(function(response) {
+                        console.log(response);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            })
 
 
         $('#Get_cookie').click(function() {

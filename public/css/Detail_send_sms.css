@@ -1,0 +1,22 @@
+.label-inline-tb{
+    margin-bottom: 0rem !important;
+    display: flex !important;
+}
+
+.btn-w-20{
+    width: 10% !important;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .btn-w-20{
+        width: 40% !important;
+    }
+}
+
+.form-check_custom {
+    display: block;
+    min-height: 1.5rem;
+    margin-bottom: 0.125rem;
+}
