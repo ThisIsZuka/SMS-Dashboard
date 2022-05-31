@@ -187,7 +187,7 @@
                                         <option value="CONTRACT_ID" data-txt='CONTRACT_ID'>CONTRACT_ID</option>
                                         <option value="QUOTATION_ID" data-txt='QUOTATION_ID'>QUOTATION_ID</option>
                                         <option value="APP_ID" data-txt='APP_ID'>APP_ID</option>
-                                        <option value="SEND_PHONE" data-txt='Ex. 66801234567'>PHONE</option>
+                                        <option value="SEND_PHONE" data-txt='Ex. 0801234567'>PHONE</option>
                                     </select>
                                 </div>
                             </div>
@@ -407,7 +407,6 @@
                         </div>
                     </div>
 
-
                 </div>
 
             </div>
@@ -426,6 +425,9 @@
 
 <script>
     $(document).ready(function() {
+
+        var token = document.head.querySelector('meta[name="csrf-token"]');
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
         // constact
         function getParameterByName(name, url) {
@@ -448,12 +450,25 @@
         }
 
         function urlify(text) {
-            let urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, function(url) {
-                return '<a href="' + url + '" target="blank">' + url + '</a>';
-            })
+            if (text != '' || text != null) {
+                let urlRegex = /(https?:\/\/[^\s]+)/g;
+                return text.replace(urlRegex, function(url) {
+                    return '<a href="' + url + '" target="blank">' + url + '</a>';
+                })
+            }
+            return '';
             // or alternatively
             // return text.replace(urlRegex, '<a href="$1">$1</a>')
+        }
+
+        function format_phone(phone) {
+            if (phone.length > 9) {
+                let format_phone = '0' + phone.substring(2, 13);
+                let txt_number = format_phone.substring(0, 3) + '-' + format_phone.substring(3, 12)
+                return txt_number;
+            } else {
+                return phone;
+            }
         }
 
 
@@ -520,6 +535,8 @@
             e.preventDefault();
             $(".background_loading").css("display", "block");
             let $row = $(this).closest("tr");
+            let sms_id = $row.find("td:nth-child(1)").text() == '-' ? null : $row.find(
+                "td:nth-child(1)").text();
             let quotation_id = $row.find("td:nth-child(4)").text() == '-' ? null : $row.find(
                 "td:nth-child(4)").text();
             let app_id = $row.find("td:nth-child(5)").text() == '-' ? null : $row.find(
@@ -537,6 +554,7 @@
                     data: {
                         transection_type: transection_type,
                         transection_id: transection_id,
+                        sms_id: sms_id,
                     }
                 }).then(function(response) {
                     console.log(response.data);
@@ -558,12 +576,12 @@
                     html_detail_sms = '';
                     response.data.data.forEach((item, index) => {
 
-                        text_sms = ''
-                        if (item.Detail_SMS) {
-                            item.Detail_SMS.forEach((sub_item, sub_index) => {
-                                text_sms += sub_item.SMS_Text
-                            })
-                        }
+                        text_sms = (item.SMS_TEXT_MESSAGE == null ? '' : item.SMS_TEXT_MESSAGE)
+                        // if (item.Detail_SMS) {
+                        //     item.Detail_SMS.forEach((sub_item, sub_index) => {
+                        //         text_sms += sub_item.SMS_Text
+                        //     })
+                        // }
 
                         html_detail_sms += `
                             <div class="tab-pane fade show ${index == 0 ? 'active' : ''}" id="SMS_${index + 1}" role="tabpanel" aria-labelledby="home-tab">
@@ -608,7 +626,7 @@
                                         เบอร์ที่ส่ง
                                     </div>
                                     <div class="col-9">
-                                        ${item.SEND_Phone}
+                                        ${format_phone(item.SEND_Phone)}
                                     </div>
                                 </div>
                                 <hr>
@@ -617,7 +635,16 @@
                                         ข้อความ
                                     </div>
                                     <div class="col-9">
-                                       ${urlify(text_sms)}
+                                        ${urlify(text_sms)}
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-3">
+                                        Credit ที่ใช้
+                                    </div>
+                                    <div class="col-9">
+                                        ${(item.SMS_CREDIT_USED)}
                                     </div>
                                 </div>
                             </div>
@@ -629,14 +656,17 @@
                     $('#modal_detail_sms').modal('show')
                 })
                 .catch(function(error) {
-                    $(".background_loading").css("display", "none");
+                    // $(".background_loading").css("display", "none");
                     Snackbar.show({
                         actionText: 'close',
                         pos: 'top-center',
                         actionTextColor: '#dc3545',
                         backgroundColor: '#323232',
                         width: 'auto',
-                        text: 'SYSTEM ERROR'
+                        text: 'SYSTEM ERROR :' + error,
+                        onClose: function() {
+                            // location.reload();
+                        }
                     });
                     // $(".loading").css("display", "none");
                     console.log(error);
@@ -658,7 +688,8 @@
         $('#select_search_col').on('change', function() {
             if ($(this).val() != '') {
                 $("#input_txt_search_col").removeAttr('disabled');
-                $("#input_txt_search_col").attr('placeholder', $("#select_search_col option:selected" ).attr('data-txt'))
+                $("#input_txt_search_col").attr('placeholder', $("#select_search_col option:selected")
+                    .attr('data-txt'))
             } else {
                 $("#input_txt_search_col").val('');
                 $("#input_txt_search_col").attr('disabled', 'disabled')
@@ -787,7 +818,7 @@
                     method: 'post',
                     url: 'list_sms',
                     params: {
-                        page: page
+                        page: page,
                     },
                     data: {
                         num_page: num_page,
@@ -838,7 +869,7 @@
                             <td scope="col">${item.CONTRACT_ID  == null ? '-' : item.CONTRACT_ID}</td>
                             <td scope="col">${item.QUOTATION_ID == null ? '-' : item.QUOTATION_ID}</td>
                             <td scope="col">${item.APP_ID  == null ? '-' : item.APP_ID}</td>
-                            <td scope="col">${item.SEND_Phone}</td>
+                            <td scope="col">${format_phone(item.SEND_Phone)}</td>
                             <td scope="col">${item.TRANSECTION_TYPE}</td>
                             <td scope="col">${item.TRANSECTION_ID  == null ? '-' : item.TRANSECTION_ID}</td>
                             <td scope="col">${item.DUE_DATE  == null ? '-' : format_date(item.DUE_DATE)}</td>

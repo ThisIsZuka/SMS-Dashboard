@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
-    <title>Admin</title>
+    <title>SMS Admin</title>
 
     <!-- Font Awesome -->
     <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
@@ -231,7 +231,7 @@
                                                 <td class="align-middle">
                                                     <h6>SMS INVOICE</h6>
                                                 </td>
-                                                <td class="align-middle">350</td>
+                                                <td class="align-middle">0</td>
                                             </tr>
                                             <tr class="active">
                                                 <td style="width:50px;"><span class="round round-success">Rec</span>
@@ -239,7 +239,7 @@
                                                 <td class="align-middle">
                                                     <h6>SMS RECEIPT</h6>
                                                 </td>
-                                                <td class="align-middle">220</td>
+                                                <td class="align-middle">0</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -366,12 +366,15 @@
 <script>
     $(document).ready(function() {
 
+        var token = document.head.querySelector('meta[name="csrf-token"]');
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+
         const option_count_type = () => {
             let today = new Date();
             let now_year = today.getFullYear();
             let now_month = today.getMonth();
             let html_year = ''
-            const list = [ now_year, now_year-1, now_year-2];
+            const list = [now_year, now_year - 1, now_year - 2];
             html_year = list.map((val, index) => {
                 return $('<option/>', {
                     val: val,
@@ -380,14 +383,15 @@
             })
             $('#year_list').html(html_year)
 
-            let months_th = ["ทุกเดือน","มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม",
-                "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            let months_th = ["ทุกเดือน", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+            ];
             let html_month = ''
             html_month = months_th.map((val, index) => {
                 return $('<option/>', {
                     val: index,
                     text: val,
-                    selected : index == (now_month + 1) ? true : false,
+                    selected: index == (now_month + 1) ? true : false,
                 })
             })
             $('#month_list').html(html_month)
@@ -446,7 +450,7 @@
                         width: 'auto',
                         text: error,
                         onClose: function() {
-                            location.reload();
+                            // location.reload();
                         }
                     });
                 });
@@ -463,13 +467,15 @@
                     // console.log(response.data);
                     // respon = response.data.split('#');
                     if (response.data.code == "999999") {
-                        txt_sms_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data.data.sms_credit;
+                        txt_sms_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data.data
+                            .sms_credit;
                         $('#txt_sms_sender').html(txt_sms_sender);
-                        txt_sms_sum_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data.data.sms_sum;
+                        txt_sms_sum_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data
+                            .data.sms_sum;
                         $('#txt_sms_sum_sender').html(txt_sms_sum_sender);
                     } else {
                         $('#text_alert').css('color', 'red')
-                        $('#text_alert').text('ไม่สามารถเชื่อมต่อกับระบบได้ : ' + response.data.message)
+                        $('#text_alert').text('ไม่สามารถเชื่อมต่อกับระบบได้')
                         $('#txt_head_code').text(response.data.code)
                         $('#Modal_alert').modal('show')
 
@@ -489,18 +495,18 @@
                         width: 'auto',
                         text: error,
                         onClose: function() {
-                            location.reload();
+                            // location.reload();
                         }
                     });
                 });
         }
 
 
-        $('#year_list').on('change',function(){
+        $('#year_list').on('change', function() {
             SMS_count_type($('#month_list').val(), $('#year_list').val())
         })
 
-        $('#month_list').on('change',function(){
+        $('#month_list').on('change', function() {
             SMS_count_type($('#month_list').val(), $('#year_list').val())
         })
 
@@ -525,9 +531,9 @@
             axios({
                     method: 'POST',
                     url: 'SMS_Sender_type',
-                    data:{
-                        year : year,
-                        month : month,
+                    data: {
+                        year: year,
+                        month: month,
                     }
                 }).then(function(response) {
                     // console.log(response.data);
@@ -536,7 +542,8 @@
                     for (let i = 0; i < items.length; i++) {
                         let class_in = color_round.filter(val => val.type == items[i].type)
                         html += '<tr>' +
-                            '<td style="width:50px;"><span class="' + class_in[0].class + '">' + class_in[0].type.substring(0, 3) + '</span></td>' +
+                            '<td style="width:50px;"><span class="' + class_in[0].class + '">' + class_in[0]
+                            .type.substring(0, 3) + '</span></td>' +
                             '<td class="align-middle">' +
                             '<h6>' + items[i].txt_name + '</h6>' +
                             '</td>' +
@@ -557,9 +564,9 @@
                         backgroundColor: '#323232',
                         width: 'auto',
                         text: error,
-                        // onClose: function() {
-                        //     location.reload();
-                        // }
+                        onClose: function() {
+                            // location.reload();
+                        }
                     });
                 });
         }

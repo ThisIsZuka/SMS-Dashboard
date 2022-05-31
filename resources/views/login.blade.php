@@ -91,9 +91,6 @@
             </form>
         </div>
 
-
-
-
     </div>
 
 </body>
@@ -102,6 +99,9 @@
 
 <script>
     $(document).ready(function() {
+
+        var token = document.head.querySelector('meta[name="csrf-token"]');
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
         $('#testbrn').on('click', function() {
             $(".background_loading").css('display', 'block');
