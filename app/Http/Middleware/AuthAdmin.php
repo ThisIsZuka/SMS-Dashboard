@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthAdmin
 {
@@ -16,7 +17,7 @@ class AuthAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        $cookie = $request->cookie('SMS_Username_Permission');
+        $cookie = Cookie::get('SMS_Username_server');
         if($cookie == 'admin') {
             return $next($request);
         }else{

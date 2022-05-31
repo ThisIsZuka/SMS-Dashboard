@@ -23,8 +23,8 @@ class Admin_Detail_SMS extends BaseController
             // dd($data);
             $return_data = new \stdClass();
 
-            $DB_DATA = DB::table('dbo.LOG_SEND_SMS')
-                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE')
+            $DB_DATA = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE','SMS_CREDIT_USED')
                 // ->get();
                 ->where(function ($query) use ($data) {
                     if ($data['date_first'] != null) {
@@ -42,6 +42,8 @@ class Admin_Detail_SMS extends BaseController
                         if ($data['type_search'] != null) {
                             $query->where('TRANSECTION_ID', $data['type_search']);
                         }
+                    }else{
+                        // $query->whereIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT', 'TAX']);
                     }
 
                     if ($data['status'] != null) {
@@ -59,7 +61,15 @@ class Admin_Detail_SMS extends BaseController
 
                     if ($data['quick_select'] != null) {
                         if ($data['quick_text'] != null) {
-                            $query->where($data['quick_select'], $data['quick_text']);
+                            $quick_text = $data['quick_text'];
+                            if($data['quick_select'] == 'SEND_PHONE'){
+                                $phone_spec = str_replace(' ','',$data['quick_text']);
+                                $phone_subsrt = str_replace('-','',$phone_spec);
+                                $quick_text =  '66' . mb_substr($phone_subsrt, 1);
+                                // dd($quick_text);
+                            }
+                            // $quick_text = 
+                            $query->where($data['quick_select'], $quick_text);
                         }
                     }
                 })
@@ -93,30 +103,15 @@ class Admin_Detail_SMS extends BaseController
             $data = $request->all();
             $return_data = new \stdClass();
 
-            $DB_DATA = DB::table('dbo.LOG_SEND_SMS')
-                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE')
-                ->where('TRANSECTION_TYPE', $data['transection_type'])
-                ->where('TRANSECTION_ID', $data['transection_id'])
+            $DB_DATA = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE','SMS_CREDIT_USED')
+                // ->where('TRANSECTION_TYPE', $data['transection_type'])
+                // ->where('TRANSECTION_ID', $data['transection_id'])
+                ->where('SMS_ID', $data['sms_id'])
                 ->get();
 
             // array_push($DB_DATA[0], 'tttttt');
             // dd(count($DB_DATA));
-            for ($i = 0; $i < count($DB_DATA); $i++) {
-
-                if ($DB_DATA[$i]->SMS_RESPONSE_JOB_ID == null) {
-                    continue;
-                }
-
-                $DB_DATA_Detail = DB::table('dbo.LOG_SEND_SMS_DETAIL')
-                    ->select('*')
-                    ->where('SMS_JobID', $DB_DATA[$i]->SMS_RESPONSE_JOB_ID)
-                    ->get();
-
-                // dd($DB_DATA_Detail[0]);
-                $DB_DATA[$i]->Detail_SMS = $DB_DATA_Detail;
-
-            }
-
 
             $return_data->data = $DB_DATA;
             $return_data->code = '999999';

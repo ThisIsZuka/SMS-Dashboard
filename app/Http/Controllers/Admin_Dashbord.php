@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Cookie;
 
+use Config;
 
 class Admin_Dashbord extends BaseController
 {
-
+    
     public function check_sender(Request $request)
     {
         try {
@@ -23,10 +24,10 @@ class Admin_Dashbord extends BaseController
             $data = $request->all();
             $return_data = new \stdClass();
 
-            $DB_DATA = DB::table('dbo.LOG_SEND_SMS_DETAIL')
-                ->count();
+            $DB_DATA = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->sum('SMS_CREDIT_USED');
 
-            $DB_DATA_Sum = DB::table('dbo.LOG_SEND_SMS')
+            $DB_DATA_Sum = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->count();
 
             $SMS_ = new \stdClass();
@@ -56,34 +57,34 @@ class Admin_Dashbord extends BaseController
 
             $data = $request->all();
             $return_data = new \stdClass();
-            $DB_INV = DB::table('dbo.LOG_SEND_SMS')
+            $DB_INV = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->where('TRANSECTION_TYPE', 'INVOICE')
-                ->where(function($query) use ($data)  {
-                    if($data['month'] != 0){
-                        $query->whereMonth('DATE',$data['month']);
+                ->where(function ($query) use ($data) {
+                    if ($data['month'] != 0) {
+                        $query->whereMonth('DATE', $data['month']);
                     }
-                 })
+                })
                 // ->whereMonth('DATE',$data['month'])
                 ->whereYear('DATE', $data['year'])
                 ->count();
-            $DB_REC = DB::table('dbo.LOG_SEND_SMS')
+            $DB_REC = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->where('TRANSECTION_TYPE', 'RECEIPT')
-                ->where(function($query) use ($data)  {
-                    if($data['month'] != 0){
-                        $query->whereMonth('DATE',$data['month']);
+                ->where(function ($query) use ($data) {
+                    if ($data['month'] != 0) {
+                        $query->whereMonth('DATE', $data['month']);
                     }
-                 })
+                })
                 // ->whereMonth('DATE', $data['month'])
                 ->whereYear('DATE', $data['year'])
                 ->count();
 
-            $DB_TAX = DB::table('dbo.LOG_SEND_SMS')
+            $DB_TAX = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->where('TRANSECTION_TYPE', 'TAX')
-                ->where(function($query) use ($data)  {
-                    if($data['month'] != 0){
-                        $query->whereMonth('DATE',$data['month']);
+                ->where(function ($query) use ($data) {
+                    if ($data['month'] != 0) {
+                        $query->whereMonth('DATE', $data['month']);
                     }
-                 })
+                })
                 // ->whereMonth('DATE', $data['month'])
                 ->whereYear('DATE', $data['year'])
                 ->count();
@@ -120,6 +121,4 @@ class Admin_Dashbord extends BaseController
             return $return_data;
         }
     }
-
-
 }

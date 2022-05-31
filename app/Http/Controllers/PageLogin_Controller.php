@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Cookie;
-
+use Illuminate\Support\Facades\Date;
 
 class PageLogin_Controller extends BaseController
 {
@@ -23,10 +23,10 @@ class PageLogin_Controller extends BaseController
             $data = $request->all();
             $return_data = new \stdClass();
 
-            $minutes = 180;
+            $minutes = time() + 60 * 60 * 6;
             Cookie::queue('SMS_Username_server', $data['username'], $minutes);
             if($data['username'] == 'admin'){
-                Cookie::queue('SMS_Username_Permission', 'admin', $minutes);
+                // Cookie::queue('SMS_Username_Permission', 'admin', $minutes);
                 $return_data->code = '999999';
                 $return_data->message = 'Sucsess';
             }else{
@@ -35,7 +35,6 @@ class PageLogin_Controller extends BaseController
                 $return_data->message = 'Sucsess';
             }
             
-
             return $return_data;
 
         } catch (Exception $e) {

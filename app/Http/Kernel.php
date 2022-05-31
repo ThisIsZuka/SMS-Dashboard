@@ -65,5 +65,9 @@ class Kernel extends HttpKernel
 
         'authLogin' => \App\Http\Middleware\AuthLogin::class,
         'authAdmin' => \App\Http\Middleware\AuthAdmin::class,
+        'basicAuth' => \App\Http\Middleware\BasicAuth::class, 
+
+        'JWT_Token' => \App\Http\Middleware\JWT_Token::class,
+
     ];
 }

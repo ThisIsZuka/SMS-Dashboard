@@ -2,8 +2,12 @@
 
 namespace App\Http\Middleware;
 
+
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
+
 
 class AuthLogin
 {
@@ -16,12 +20,20 @@ class AuthLogin
      */
     public function handle(Request $request, Closure $next)
     {
-        $cookie = $request->cookie('SMS_Username_server');
-        if($cookie == null || $cookie == '') {
-            return redirect()->route('login');
-            // abort(403, 'Unauthorized action.');
-        }else{
-            return $next($request);
+        // print_r(Cookie::get());
+        // $cookie = Cookie::get('SMS_Username_server');
+        // if($request->hasCookie('SMS_Username_server')) {
+        //     return $next($request);
+        //     // abort(403, 'Unauthorized action.');
+        // }else{
+        //     return redirect()->route('login');
+        // }
+        if($request->hasCookie('SMS_Username_server')) {
+            return $next($request);    
         }
+        
+        $response = $next($request);
+        return $response->withCookie(cookie()->forever('SMS_Username_server', Cookie::get('SMS_Username_server')));
     }
+
 }
