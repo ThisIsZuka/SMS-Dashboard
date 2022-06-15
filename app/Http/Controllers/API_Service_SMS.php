@@ -17,6 +17,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
 
+use Illuminate\Support\Facades\Event;
+use App\Events\MyPusherEvent;
+use App\Events\EventFinish_SMS;
+
 class API_Service_SMS extends BaseController
 {
 
@@ -83,7 +87,7 @@ class API_Service_SMS extends BaseController
 
             $data = $request->all();
             $return_data = new \stdClass();
-            dd('dd');
+            // dd('dd');
             date_default_timezone_set('Asia/bangkok');
             $dateNow = date('Y-m-d');
             $inv_date = $data['INV_DATE'];
@@ -195,8 +199,16 @@ class API_Service_SMS extends BaseController
                         'SMS_TEXT_MESSAGE' => $e->getMessage(),
                     ]);
                 }
+
+                $content = new Request();
+                $report = new Admin_Dashbord();
+                // event(new MyPusherEvent($report->check_sender($content)));
+                event(new MyPusherEvent($content));
+
             }
 
+            $content_finish = new Request();
+            event(new EventFinish_SMS($content_finish));
 
             $return_data->Code = '999999';
             $return_data->Status = 'Success';

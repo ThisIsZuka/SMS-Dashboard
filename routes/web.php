@@ -13,6 +13,9 @@ use App\Http\Controllers\API_Service_Mail;
 use App\Http\Controllers\Admin_Dashbord;
 use App\Http\Controllers\Admin_Detail_SMS;
 
+
+use App\Http\Controllers\Pthread;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -112,3 +115,16 @@ Route::get('/test_send_SMS', [API_Service_SMS::class, 'test_send_SMS']);
 Route::get('/test_Mail', [API_Service_Mail::class, 'PostRequest_Mail']);
 
 // Route::get('/conf_sms', [API_Service_Mail::class, 'conf_sms_send']);
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+Route::get('index', function () {
+    return view('index');
+});
+
+
+Route::get('/count', [Admin_Detail_SMS::class, 'test_b']);
+

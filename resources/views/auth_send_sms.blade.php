@@ -7,10 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- JQuery --}}
-    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
 
     {{-- axios --}}
-    <script src="{{ asset('assets/axios.min.js') }}"></script>
+    <script src="{{ asset('public/assets/axios.min.js') }}"></script>
 
 </head>
 

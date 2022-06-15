@@ -6,39 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
+    <link href="{{ asset('public/images/icon.jpg') }}" rel="icon" type="image/gif">
     <title>Login SMS Management</title>
 
     <!-- Font Awesome -->
-    <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('public/assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
-    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
 
     {{-- axios --}}
-    <script src="{{ asset('assets/axios.min.js') }}"></script>
+    <script src="{{ asset('public/assets/axios.min.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
     {{-- SnackBar --}}
-    <link href="{{ asset('assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
+    <link href="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
 
 
     {{-- Cookie --}}
-    <script src="{{ asset('assets/js.cookie.js') }}"></script>
+    <script src="{{ asset('public/assets/js.cookie.js') }}"></script>
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/Main.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/Main.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/login.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('css/bg_star.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/bg_star.css') }}">
 
 
 </head>
@@ -64,7 +64,7 @@
 
             <form class="centered card_bg">
                 <div class="container text-center">
-                    <img src="{{ asset('images/UFUND.png') }}" alt="" style="width: 50%;" id="icon_ufond_login">
+                    <img src="{{ asset('public/images/UFUND.png') }}" alt="" style="width: 50%;" id="icon_ufond_login">
 
                     <h3 class="text-color-gradian">SMS Management</h3>
                 </div>
