@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Cookie;
 
 use Config;
 
+use Illuminate\Support\Facades\Event;
+use App\Events\MyPusherEvent;
+
 class Admin_Dashbord extends BaseController
 {
-    
+
     public function check_sender(Request $request)
     {
         try {
@@ -89,6 +92,20 @@ class Admin_Dashbord extends BaseController
                 ->whereYear('DATE', $data['year'])
                 ->count();
 
+
+            $DB_OTHER = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->whereNotIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT' ,'TAX'])
+                ->OrwhereNull('TRANSECTION_TYPE')
+                ->where(function ($query) use ($data) {
+                    if ($data['month'] != 0) {
+                        $query->whereMonth('DATE', $data['month']);
+                    }
+                })
+                // ->whereMonth('DATE', $data['month'])
+                ->whereYear('DATE', $data['year'])
+                ->count();
+            // dd($DB_OTHER);
+
             $sms_INV = new \stdClass();
             $sms_INV->type = 'INVOICE';
             $sms_INV->txt_name = 'SMS INVOICE';
@@ -104,7 +121,12 @@ class Admin_Dashbord extends BaseController
             $sms_TAX->txt_name = 'SMS TAX';
             $sms_TAX->sum = $DB_TAX;
 
-            $arry_list = array($sms_INV, $sms_REC, $sms_TAX);
+            $sms_OTHER = new \stdClass();
+            $sms_OTHER->type = 'OTHER';
+            $sms_OTHER->txt_name = 'SMS OTHER';
+            $sms_OTHER->sum = $DB_OTHER;
+
+            $arry_list = array($sms_INV, $sms_REC, $sms_TAX, $sms_OTHER);
 
             $return_data->data = $arry_list;
             $return_data->code = '999999';

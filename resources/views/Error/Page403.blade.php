@@ -9,10 +9,10 @@
     <title>Not Found</title>
     <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" />
     <!-- Favicon icon -->
-    <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
+    <link href="{{ asset('public/images/icon.jpg') }}" rel="icon" type="image/gif">
     <!-- Custom CSS -->
     {{-- <link href={{ asset('monster-html/css/style.css') }} rel="stylesheet"> --}}
-    <link href={{ asset('css/403.css') }} rel="stylesheet">
+    <link href={{ asset('public/css/403.css') }} rel="stylesheet">
 
 </head>
 
@@ -80,9 +80,9 @@
 
     </div> --}}
 
-    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="{{ asset('monster-html/plugins/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('public/monster-html/plugins/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
     <script>
         var root = document.documentElement;

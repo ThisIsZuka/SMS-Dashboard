@@ -6,59 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
+    <link href="{{ asset('public/images/icon.jpg') }}" rel="icon" type="image/gif">
     <title>SMS Admin</title>
 
     <!-- Font Awesome -->
-    <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('public/assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
-    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
 
     {{-- axios --}}
-    <script src="{{ asset('assets/axios.min.js') }}"></script>
+    <script src="{{ asset('public/assets/axios.min.js') }}"></script>
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> --}}
 
     {{-- SnackBar --}}
-    <link href="{{ asset('assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
+    <link href="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
 
 
     {{-- Cookie --}}
-    <script src="{{ asset('assets/js.cookie.js') }}"></script>
+    <script src="{{ asset('public/assets/js.cookie.js') }}"></script>
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/Main.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/Main.css') }}">
 
 
     {{-- DASHBOARD --}}
 
     <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" />
     <!-- Custom CSS -->
-    <link href={{ asset('monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
+    <link href={{ asset('public/monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
     <!-- Custom CSS -->
-    <link href={{ asset('monster-html/css/style.min.css') }} rel="stylesheet">
+    <link href={{ asset('public/monster-html/css/style.min.css') }} rel="stylesheet">
 
 
-    <script src={{ asset('monster-html/js/app-style-switcher.js') }}></script>
+    <script src={{ asset('public/monster-html/js/app-style-switcher.js') }}></script>
     <!--Wave Effects -->
-    <script src={{ asset('monster-html/js/waves.js') }}></script>
+    <script src={{ asset('public/monster-html/js/waves.js') }}></script>
     <!--Menu sidebar -->
-    <script src={{ asset('monster-html/js/sidebarmenu.js') }}></script>
+    <script src={{ asset('public/monster-html/js/sidebarmenu.js') }}></script>
     <!--Custom JavaScript -->
-    <script src={{ asset('monster-html/js/custom.js') }}></script>
+    <script src={{ asset('public/monster-html/js/custom.js') }}></script>
     <!--This page JavaScript -->
-    <script src={{ asset('monster-html/js/pages/dashboards/dashboard1.js') }}></script>
+    <script src={{ asset('public/monster-html/js/pages/dashboards/dashboard1.js') }}></script>
     <!--flot chart-->
-    <script src={{ asset('monster-html/plugins/flot/jquery.flot.js') }}></script>
-    <script src={{ asset('monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
+    <script src={{ asset('public/monster-html/plugins/flot/jquery.flot.js') }}></script>
+    <script src={{ asset('public/monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
+
+
+    {{-- Pusher Broadcast --}}
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
 </head>
 
@@ -399,12 +403,13 @@
             SMS_count_type(now_month + 1, now_year);
         }
 
+        var firstLoad = 0;
 
         // function start
-        option_count_type();
         SMS_Check_Credit();
         SMS_Check_Sender();
-
+        option_count_type();
+        // setInterval(SMS_Check_Credit, 2000);
 
         function SMS_Check_Credit(iurl, id, type, number) {
             $(".background_loading").css("display", "block");
@@ -437,7 +442,6 @@
                         $('#txt_sms_credit').css('color', 'red')
                         $('#txt_sms_credit').html('Error');
                     }
-                    $(".background_loading").css("display", "none");
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -450,16 +454,19 @@
                         width: 'auto',
                         text: error,
                         onClose: function() {
-                            // location.reload();
+                            location.reload();
                         }
                     });
                 });
-
+            $(".background_loading").css("display", "none");
         }
 
 
         function SMS_Check_Sender() {
-            $(".background_loading").css("display", "block");
+            // $(".background_loading").css("display", "block");
+            if (firstLoad == 0) {
+                $(".background_loading").css("display", "block");
+            }
             axios({
                     method: 'POST',
                     url: 'SMS_Sender',
@@ -470,7 +477,8 @@
                         txt_sms_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data.data
                             .sms_credit;
                         $('#txt_sms_sender').html(txt_sms_sender);
-                        txt_sms_sum_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data
+                        txt_sms_sum_sender = '<i class="ti-location-arrow text-info ml-1"></i>' + response
+                            .data
                             .data.sms_sum;
                         $('#txt_sms_sum_sender').html(txt_sms_sum_sender);
                     } else {
@@ -495,24 +503,28 @@
                         width: 'auto',
                         text: error,
                         onClose: function() {
-                            // location.reload();
+                            location.reload();
                         }
                     });
                 });
+            // firstLoad = 1
         }
 
 
         $('#year_list').on('change', function() {
+            firstLoad = 0
             SMS_count_type($('#month_list').val(), $('#year_list').val())
         })
 
         $('#month_list').on('change', function() {
+            firstLoad = 0
             SMS_count_type($('#month_list').val(), $('#year_list').val())
         })
 
-
         function SMS_count_type(month, year) {
-            $(".background_loading").css("display", "block");
+            if (firstLoad == 0) {
+                $(".background_loading").css("display", "block");
+            }
 
             var color_round = [{
                     type: 'INVOICE',
@@ -525,6 +537,10 @@
                 {
                     type: 'TAX',
                     class: 'round round-info'
+                },
+                {
+                    type: 'OTHER',
+                    class: 'round round-primary'
                 }
             ]
 
@@ -551,7 +567,6 @@
                             '</tr>';
                     }
                     $('#list_count_sms_type').html(html);
-
                     $(".background_loading").css("display", "none");
                 })
                 .catch(function(error) {
@@ -565,10 +580,11 @@
                         width: 'auto',
                         text: error,
                         onClose: function() {
-                            // location.reload();
+                            location.reload();
                         }
                     });
                 });
+            firstLoad = 1
         }
 
 
@@ -576,6 +592,38 @@
             location.reload();
         })
 
+
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('54952d201ebbc6d5bcab', {
+            cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('realtimeData-channel');
+        var countTime = 0
+        channel.bind('realtimeData-event', function(data) {
+            // alert(JSON.stringify(data));
+            // console.log(data.data)
+            task(countTime)
+            countTime++;
+            // SMS_Check_Credit();
+            // SMS_count_type($('#month_list').val(), $('#year_list').val())
+            // SMS_Check_Sender()
+        });
+
+        channel.bind('finish-sms-event', function(data) {
+            countTime = 0
+        });
+
+        function task(i) {
+            setTimeout(function() {
+                // console.log(i);
+                SMS_Check_Credit();
+                SMS_count_type($('#month_list').val(), $('#year_list').val())
+                SMS_Check_Sender()
+            }, 4000 * i);
+            // console.log('countTime = ' + countTime);
+        }
 
 
     });

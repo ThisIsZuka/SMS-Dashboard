@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Cookie;
 
+use App\Http\Controllers\Admin_Dashbord;
+
+use Illuminate\Support\Facades\Event;
+use App\Events\MyPusherEvent;
+use App\Events\EventFinish_SMS;
 
 class Admin_Detail_SMS extends BaseController
 {
@@ -128,5 +133,26 @@ class Admin_Detail_SMS extends BaseController
 
             return $return_data;
         }
+    }
+
+    public function test_b(Request $request)
+    {
+        // for ($i = 0; $i < 15000; $i++) {
+        //     $return_data = new \stdClass();
+        //     $content = new Request();
+        //     $report = new Admin_Dashbord();
+        //     event(new MyPusherEvent($report->check_sender($content)));
+        // }
+        // $content_finish = new Request();
+        // event(new EventFinish_SMS($content_finish));
+
+        $return_data = new \stdClass();
+        $return_data->code = '000000';
+
+        $content = new Request();
+        $content->data = '456';
+        $content->data2 = '456';
+        $content->data3 = $return_data;
+        dd($content);
     }
 }

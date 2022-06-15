@@ -6,66 +6,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
+    <link href="{{ asset('public/images/icon.jpg') }}" rel="icon" type="image/gif">
     <title>Detail Send SMS</title>
 
     <!-- Font Awesome -->
-    <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('public/assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
-    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
 
     {{-- axios --}}
-    <script src="{{ asset('assets/axios.min.js') }}"></script>
+    <script src="{{ asset('public/assets/axios.min.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
     {{-- SnackBar --}}
-    <link href="{{ asset('assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('assets/SnackBar-master/dist/snackbar.js') }}"></script>
+    <link href="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('public/assets/SnackBar-master/dist/snackbar.js') }}"></script>
 
 
     {{-- Cookie --}}
-    <script src="{{ asset('assets/js.cookie.js') }}"></script>
+    <script src="{{ asset('public/assets/js.cookie.js') }}"></script>
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/Main.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/Detail_send_sms.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/Main.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/Detail_send_sms.css') }}">
 
 
     {{-- DASHBOARD --}}
 
     <!-- Custom CSS -->
-    <link href={{ asset('monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
+    <link href={{ asset('public/monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
     <!-- Custom CSS -->
-    <link href={{ asset('monster-html/css/style.css') }} rel="stylesheet">
+    <link href={{ asset('public/monster-html/css/style.css') }} rel="stylesheet">
 
 
-    <script src={{ asset('monster-html/js/app-style-switcher.js') }}></script>
+    <script src={{ asset('public/monster-html/js/app-style-switcher.js') }}></script>
     <!--Wave Effects -->
-    <script src={{ asset('monster-html/js/waves.js') }}></script>
+    <script src={{ asset('public/monster-html/js/waves.js') }}></script>
     <!--Menu sidebar -->
-    <script src={{ asset('monster-html/js/sidebarmenu.js') }}></script>
+    <script src={{ asset('public/monster-html/js/sidebarmenu.js') }}></script>
     <!--Custom JavaScript -->
-    <script src={{ asset('monster-html/js/custom.js') }}></script>
+    <script src={{ asset('public/monster-html/js/custom.js') }}></script>
     <!--This page JavaScript -->
     <!--flot chart-->
-    <script src={{ asset('monster-html/plugins/flot/jquery.flot.js') }}></script>
-    <script src={{ asset('monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
+    <script src={{ asset('public/monster-html/plugins/flot/jquery.flot.js') }}></script>
+    <script src={{ asset('public/monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
 
     {{-- Date Picker --}}
     <link rel="stylesheet"
-        href="{{ asset('assets/Zebra_Datepicker-master/dist/css/bootstrap/zebra_datepicker.min.css') }}">
-    <script src={{ asset('assets/Zebra_Datepicker-master/dist/zebra_datepicker_V2_custom.min.js') }}></script>
+        href="{{ asset('public/assets/Zebra_Datepicker-master/dist/css/bootstrap/zebra_datepicker.min.css') }}">
+    <script src={{ asset('public/assets/Zebra_Datepicker-master/dist/zebra_datepicker_V2_custom.min.js') }}></script>
 
-    <link href={{ asset('css/date-picker.css') }} rel="stylesheet">
+    <link href={{ asset('public/css/date-picker.css') }} rel="stylesheet">
 
+
+    {{-- Pusher Broadcast --}}
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 </head>
 
 <body>
@@ -283,7 +286,7 @@
 
                 <div class="container-fluid">
                     <nav aria-label="Page">
-                        <ul class="pagination justify-content-center" id="page_num">
+                        <ul class="pagination justify-content-center flex-wrap" id="page_num">
                             {{-- <li class="page-item">
                                 <a class="page-link" href="#" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
@@ -576,7 +579,8 @@
                     html_detail_sms = '';
                     response.data.data.forEach((item, index) => {
 
-                        text_sms = (item.SMS_TEXT_MESSAGE == null ? '' : item.SMS_TEXT_MESSAGE)
+                        text_sms = (item.SMS_TEXT_MESSAGE == null ? '' : item
+                            .SMS_TEXT_MESSAGE)
                         // if (item.Detail_SMS) {
                         //     item.Detail_SMS.forEach((sub_item, sub_index) => {
                         //         text_sms += sub_item.SMS_Text
@@ -608,7 +612,7 @@
                                         Transection Type
                                     </div>
                                     <div class="col-9">
-                                        ${item.TRANSECTION_TYPE}
+                                        ${item.TRANSECTION_TYPE == null ? '-' : item.TRANSECTION_TYPE}
                                     </div>
                                 </div>
                                 <hr>
@@ -617,7 +621,7 @@
                                         Transection ID
                                     </div>
                                     <div class="col-9">
-                                        ${item.TRANSECTION_ID}
+                                        ${item.TRANSECTION_ID == null ? '-' : item.TRANSECTION_ID}
                                     </div>
                                 </div>
                                 <hr>
@@ -698,6 +702,7 @@
         })
 
 
+        // กดเลือกหน้า pagination
         $('body').on('click', '.pagination a', function(e) {
             e.preventDefault();
             let url = $(this).attr('href');
@@ -806,8 +811,7 @@
         }
 
 
-        function get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date,
-            quick_select, quick_text) {
+        function get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date, quick_select, quick_text) {
             if (typeof(num_page) == "undefined" && num_page == null) {
                 num_page = 10;
             }
@@ -853,9 +857,28 @@
                     // $('#page_num').html(html_page)
 
                     links.forEach((links, index) => {
-                        html_page += `
-                        <li class="page-item ${links.url == null ? 'disabled' : ''}  ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
-                        `
+                        // html_page += `
+                        // <li class="page-item ${links.url == null ? 'disabled' : ''}  ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
+                        // `
+                        if( links.label == "&laquo; Previous" || links.label == "Next &raquo;"){
+
+                            typeIcon = links.label.includes("Previous") == true ? 'Previous' : 'Next';
+                            Icon = links.label.includes("&laquo;") == true ? '&laquo;' : '&raquo;';
+
+                            html_page += `
+                             <li class="page-item ${links.url == null ? 'disabled' : ''} ">
+                                <a class="page-link" href="${links.url}" aria-label="${typeIcon}">
+                                    <span aria-hidden="true">${Icon}</span>
+                                    <span class="sr-only">${typeIcon}</span>
+                                </a>
+                            </li>
+                            `
+                        }else{
+                            html_page += `
+                            <li class="page-item ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
+                            `
+                        }
+                        
                     })
                     $('#page_num').html(html_page)
 
@@ -870,7 +893,7 @@
                             <td scope="col">${item.QUOTATION_ID == null ? '-' : item.QUOTATION_ID}</td>
                             <td scope="col">${item.APP_ID  == null ? '-' : item.APP_ID}</td>
                             <td scope="col">${format_phone(item.SEND_Phone)}</td>
-                            <td scope="col">${item.TRANSECTION_TYPE}</td>
+                            <td scope="col">${item.TRANSECTION_TYPE == null ? '-' : item.TRANSECTION_TYPE } </td>
                             <td scope="col">${item.TRANSECTION_ID  == null ? '-' : item.TRANSECTION_ID}</td>
                             <td scope="col">${item.DUE_DATE  == null ? '-' : format_date(item.DUE_DATE)}</td>
                             <td scope="col"><span class="${item.SMS_RESPONSE_CODE == '000' ? 'text-success' : 'text-danger'}"> ${item.SMS_RESPONSE_MESSAGE} </span></td>
@@ -902,7 +925,6 @@
                     });
                 });
         }
-
 
 
         // end script
