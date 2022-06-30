@@ -126,5 +126,5 @@ Route::get('index', function () {
 });
 
 
-Route::get('/count', [Admin_Detail_SMS::class, 'test_b']);
+Route::get('/queueTest', [API_Service_SMS::class, 'queueTest']);
 
