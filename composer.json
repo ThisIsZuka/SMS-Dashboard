@@ -13,6 +13,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
+        "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "rbdwllr/reallysimplejwt": "^3.1"
     },

@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Event;
 use App\Events\MyPusherEvent;
 use App\Events\EventFinish_SMS;
 
+use App\Jobs\SendSMS;
+use App\Jobs\Job_QueueSMS;
+
 class API_Service_SMS extends BaseController
 {
 
@@ -204,7 +207,6 @@ class API_Service_SMS extends BaseController
                 $report = new Admin_Dashbord();
                 // event(new MyPusherEvent($report->check_sender($content)));
                 event(new MyPusherEvent($content));
-
             }
 
             $content_finish = new Request();
@@ -453,7 +455,7 @@ class API_Service_SMS extends BaseController
 
         $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_SEND_SMS  @ID = '" . $ID . "' , @Status_sms = " . $Status_sms));
 
-        if(count($list_sendSMS) == 0){
+        if (count($list_sendSMS) == 0) {
             return response()->json(array(
                 'Code' => '0050',
                 'status' => 'Error',
@@ -469,7 +471,7 @@ class API_Service_SMS extends BaseController
 
             $message_sms_tel = str_replace("[tel]", $list_sendSMS[0]->phone_BRANCH, $list_sendSMS[0]->MESSAGE);
             $message_sms_contract = str_replace("[CONTRACT_NUMBER]", $list_sendSMS[0]->CONTRACT_NUMBER, $message_sms_tel);
-            $message_sms_app = str_replace("[Approve]", ( isset($list_sendSMS[0]->APPROVE_CODE) ? $list_sendSMS[0]->APPROVE_CODE : null ) , $message_sms_contract);
+            $message_sms_app = str_replace("[Approve]", (isset($list_sendSMS[0]->APPROVE_CODE) ? $list_sendSMS[0]->APPROVE_CODE : null), $message_sms_contract);
 
 
             $data_arry = array(
@@ -560,6 +562,29 @@ class API_Service_SMS extends BaseController
             $return_data->Message =  $e->getMessage();
 
             return $return_data;
+        }
+    }
+
+
+    public function queueTest()
+    {
+        try {
+          
+            $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '01-01-2022' "));
+
+            for ($x = 1; $x < 10; $x++) {
+              // var_dump($x);
+            //   if($x % 2 == 0){
+            //     CalculateDataJob::dispatch($list_sendSMS[$x]);
+            //   }else{
+            //     CalculateDataJob::dispatch($list_sendSMS[$x]);
+            //   }
+            Job_QueueSMS::dispatch($list_sendSMS[$x]);
+            }
+
+            return true;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 }

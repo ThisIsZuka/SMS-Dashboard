@@ -30,6 +30,6 @@ class SendSMS implements ShouldQueue
      */
     public function handle()
     {
-        //
+        return ('test sent SMS JOB Queues');
     }
 }
