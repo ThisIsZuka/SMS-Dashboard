@@ -122,8 +122,10 @@
                     console.log(response);
                     // $(".background_loading").css("display", "none");
                     if (response.data.code == '999999') {
+                        // $.cookie("SMS_Username_server", "Zg8>%z!!8DH~.AY% PG,b5(*KvP{mB%)_");
                         window.location = '{{ url('/') }}';
                     } else {
+                        $.cookie("SMS_Username_server", null);
                         Snackbar.show({
                             actionText: 'close',
                             pos: 'top-center',

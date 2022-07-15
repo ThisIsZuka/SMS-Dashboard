@@ -98,8 +98,8 @@ class Job_QueueSMS implements ShouldQueue
             $datestamp = date('Y-m-d');
             $timestamp = date('H:i:s');
 
-            // $phone = '66' . mb_substr($cus_data->PHONE, 1);
-            $phone = '66804817163';
+            $phone = '66' . mb_substr($cus_data->PHONE, 1);
+            // $phone = '66804817163';
 
             $split_str = explode("-", $cus_data->DUE_DATE);
 
@@ -172,12 +172,7 @@ class Job_QueueSMS implements ShouldQueue
             $datestamp = date('Y-m-d');
             $timestamp = date('H:i:s');
             $new_error_id = date("Ymdhis");
-            $return_data = new \stdClass();
-
-            $return_data->Code = '0X0MB0000';
-            $return_data->Status =  $e->getMessage();
-
-            return $return_data;
+            
             DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
                 'DATE' => $dateNow,
                 'RUNNING_NO' => $new_id[0]->new_id,
@@ -195,6 +190,13 @@ class Job_QueueSMS implements ShouldQueue
                 'DUE_DATE' => $cus_data->DUE_DATE,
                 'SMS_TEXT_MESSAGE' => $e->getMessage(),
             ]);
+
+            $return_data = new \stdClass();
+
+            $return_data->Code = '0X0MB0000';
+            $return_data->Status =  $e->getMessage();
+
+            return $return_data;
         }
     }
 }

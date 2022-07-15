@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API_Service_SMS;
 use App\Http\Controllers\API_Support_K2;
 use App\Http\Controllers\Login_Auth_Controller;
+use App\Http\Controllers\API_SCB;
+use App\Http\Controllers\API_Sandbox_SCB;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,7 @@ use App\Http\Controllers\Login_Auth_Controller;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -48,3 +51,8 @@ Route::group(['middleware' => ['JWT_Token']], function () {
     Route::get('/send_SMS_WelcomeCall', [API_Service_SMS::class, 'submit_send_SMS_WelcomeCall']);
 
 });
+
+
+// API SCB
+// Route::post('/Payment_Confirm', [API_SCB::class, 'SCB_Callback_Payment_Confirm']);
+Route::post('/Payment_Confirm', [API_Sandbox_SCB::class, 'SCB_Callback_Payment_Confirm']);

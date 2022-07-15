@@ -16,6 +16,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
+use Illuminate\Http\Client\ConnectionException;
 
 use Illuminate\Support\Facades\Event;
 use App\Events\MyPusherEvent;
@@ -178,12 +179,7 @@ class API_Service_SMS extends BaseController
                     $datestamp = date('Y-m-d');
                     $timestamp = date('H:i:s');
                     $new_error_id = date("Ymdhis");
-                    $return_data = new \stdClass();
 
-                    $return_data->Code = '0X0MB0000';
-                    $return_data->Status =  $e->getMessage();
-
-                    return $return_data;
                     DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
                         'DATE' => $dateNow,
                         'RUNNING_NO' => $new_id[0]->new_id,
@@ -201,6 +197,13 @@ class API_Service_SMS extends BaseController
                         'DUE_DATE' => $list_sendSMS[$i]->DUE_DATE,
                         'SMS_TEXT_MESSAGE' => $e->getMessage(),
                     ]);
+
+                    $return_data = new \stdClass();
+
+                    $return_data->Code = '0X0MB0000';
+                    $return_data->Status =  $e->getMessage();
+
+                    return $return_data;
                 }
 
                 $content = new Request();
@@ -227,6 +230,41 @@ class API_Service_SMS extends BaseController
             return $return_data;
         }
     }
+
+
+    
+    public function submit_send_SMS_Invoice_optimize(Request $request)
+    {
+        try {
+
+            $data = $request->all();
+            $return_data = new \stdClass();
+            $inv_date = $data['INV_DATE'];
+
+            $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '" . $inv_date . "' "));
+
+            for ($i = 0; $i < count($list_sendSMS); $i++) {
+
+                Job_QueueSMS::dispatch($list_sendSMS[$i]);
+
+            }
+
+            $return_data->Code = '999999';
+            $return_data->Status = 'SMS Processing';
+            return $return_data;
+
+        } catch (Exception $e) {
+            $return_data = new \stdClass();
+
+            $return_data->Code = '000000';
+            $return_data->Status =  $e->getMessage();
+
+            return $return_data;
+        }
+
+    }
+
+
 
 
     public function submit_send_SMS_WelcomeCall(Request $request)
@@ -587,4 +625,52 @@ class API_Service_SMS extends BaseController
             echo $ex->getMessage();
         }
     }
+
+    public function check_sending(Request $request)
+    {
+
+        try {
+
+            $data = $request->all();
+
+            $user = 'ufund_official';
+            $password = 'ufund@2022';
+
+            $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user='.$user.'&password='.$password.'&messageid='.$data['msgId']);
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            return response()->json(array(
+                'Code' => '0500',
+                'status' => 'Failed',
+                'message' => $e->getMessage(),
+            ));
+        }
+
+    }
+
+    public function TestSending(){
+
+        $data_arry = array(
+            'user' => "ufund_official",
+            'password' => "ufund@2022",
+            'msisdn' => '66804817163',
+            'sid' => "UFUND TH",
+            'msg' => "ทดสอบ SMS Check Deliver",
+            'fl' => "0",
+            'dc' => "8",
+        );
+
+        // echo '<pre>';
+        // print_r($data_arry);
+        // echo '</pre>';
+        list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+
+        $obj2 = json_decode($content);
+
+        return $obj2;
+    }
+
 }
