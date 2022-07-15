@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.5",
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^7.0",
-        "rbdwllr/reallysimplejwt": "^3.1"
+        "rbdwllr/reallysimplejwt": "^3.1",
+        "webpatser/laravel-uuid": "4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

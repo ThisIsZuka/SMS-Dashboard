@@ -12,9 +12,10 @@ use App\Http\Controllers\API_Service_Mail;
 
 use App\Http\Controllers\Admin_Dashbord;
 use App\Http\Controllers\Admin_Detail_SMS;
+use App\Http\Controllers\API_SCB;
+use App\Http\Controllers\API_Sandbox_SCB;
 
 
-use App\Http\Controllers\Pthread;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,10 +102,16 @@ Route::get('page_404', function () {
 // SMS Mailbit API
 Route::get('/SMS_Check_Credit', [API_Service_SMS::class, 'SMS_Check_Credit']);
 
+Route::get('/checkSending', [API_Service_SMS::class, 'check_sending']);
+
+Route::get('/TestSending', [API_Service_SMS::class, 'TestSending']);
+
+
 
 Route::middleware(['basicAuth'])->group(function () {
     //All the routes are placed in here
-    Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice']);
+    // Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice']);
+    Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
 });
 
 Route::get('/test_send_SMS', [API_Service_SMS::class, 'test_send_SMS']);
@@ -127,4 +134,20 @@ Route::get('index', function () {
 
 
 Route::get('/queueTest', [API_Service_SMS::class, 'queueTest']);
+
+// Route::get('/scb_send_qrdown', [API_SCB::class, 'SCB_Create_QR_Code']);
+
+// Route::get('/SCB_Check_slip', [API_SCB::class, 'SCB_Check_slip']);
+
+// Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
+
+
+Route::get('/scb_send_qrdown', [API_Sandbox_SCB::class, 'SCB_Create_QR_Code']);
+
+Route::get('/SCB_Check_slip', [API_Sandbox_SCB::class, 'SCB_Check_slip']);
+
+Route::get('/SCB_TransactionInquiry', [API_Sandbox_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
+
+Route::get('/SCB_OauthToken', [API_Sandbox_SCB::class, 'SCB_OauthToken']);
+
 

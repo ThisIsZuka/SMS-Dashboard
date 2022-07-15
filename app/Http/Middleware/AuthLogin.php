@@ -28,12 +28,17 @@ class AuthLogin
         // }else{
         //     return redirect()->route('login');
         // }
+        // dd($request->cookie('SMS_Username_server'));
         if($request->hasCookie('SMS_Username_server')) {
-            return $next($request);    
+            if($request->cookie('SMS_Username_server') != ''){
+                return $next($request);  
+            }
+            return redirect()->route('login');
         }
         
-        $response = $next($request);
-        return $response->withCookie(cookie()->forever('SMS_Username_server', Cookie::get('SMS_Username_server')));
+        return redirect()->route('login');
+        // $response = $next($request);
+        // return $response->withCookie(cookie()->forever('SMS_Username_server', Cookie::get('SMS_Username_server')));
     }
 
 }
