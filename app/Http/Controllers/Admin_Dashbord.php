@@ -94,15 +94,17 @@ class Admin_Dashbord extends BaseController
 
 
             $DB_OTHER = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                ->whereNotIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT' ,'TAX'])
-                ->OrwhereNull('TRANSECTION_TYPE')
                 ->where(function ($query) use ($data) {
+                    $query->whereNotIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT', 'TAX']);
+                    $query->OrwhereNull('TRANSECTION_TYPE');
+                })
+                ->where(function ($querysub) use ($data) {
                     if ($data['month'] != 0) {
-                        $query->whereMonth('DATE', $data['month']);
+                        $querysub->whereMonth('DATE', $data['month']);
                     }
+                    $querysub->whereYear('DATE', $data['year']);
                 })
                 // ->whereMonth('DATE', $data['month'])
-                ->whereYear('DATE', $data['year'])
                 ->count();
             // dd($DB_OTHER);
 
@@ -131,6 +133,65 @@ class Admin_Dashbord extends BaseController
             $return_data->data = $arry_list;
             $return_data->code = '999999';
             $return_data->message = 'Sucsess';
+
+            return $return_data;
+        } catch (Exception $e) {
+
+            $return_data = new \stdClass();
+
+            $return_data->code = '000000';
+            $return_data->message =  $e->getMessage();
+
+            return $return_data;
+        }
+    }
+
+    public function Chart_overiview()
+    {
+        try {
+
+            $SuccessDeliver = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_CODE', '000')
+                ->where('SMS_Status_Delivery', '#DELIVRD')
+                ->count();
+
+            $SuccessUndeliver = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_CODE', '000')
+                ->where('SMS_Status_Delivery', '#UNDELIV')
+                ->count();
+
+            $SuccessStatusUnknown = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_CODE', '000')
+                ->where('SMS_Status_Delivery', '#StatusUnknown')
+                ->count();
+
+            $SuccessWaitCheck = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_CODE', '000')
+                ->whereNull('SMS_Status_Delivery')
+                ->count();
+
+            $SYSTEM_ERROR = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_CODE', '0x00')
+                ->count();
+
+            $Invalid_mobile = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_RESPONSE_MESSAGE', 'Invalid mobile numbers')
+                ->count();
+
+            $return_data = new \stdClass();
+
+            $return_data->SuccessDeliver = $SuccessDeliver;
+            $return_data->SuccessUndeliver = $SuccessUndeliver;
+            $return_data->SuccessStatusUnknown = $SuccessStatusUnknown;
+            $return_data->SuccessWaitCheck = $SuccessWaitCheck;
+            $return_data->SYSTEM_ERROR = $SYSTEM_ERROR;
+            $return_data->Invalid_mobile = $Invalid_mobile;
 
             return $return_data;
         } catch (Exception $e) {

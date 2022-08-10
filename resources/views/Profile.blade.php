@@ -210,7 +210,9 @@
 
 <script>
     $(document).ready(function() {
+        
         // http: //ufund-portal.webhop.biz:9090/SMS-Dashboard/send_SMS_Invoice?PHONE=..&QUOTATION_ID=..&APP_ID=..&INVOICE_ID=..&CONTRACT_ID=..&DUE_DATE=..
+
         $('#testbrn').on('click', function() {
             // $(".background_loading").css('display', 'block');
             var data = new FormData();

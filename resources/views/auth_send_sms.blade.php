@@ -28,7 +28,7 @@
     $(document).ready(function() {
         disp_prompt();
     });
-    
+
 
     function disp_prompt() {
         var USER = prompt("Please enter your Username", "")
@@ -46,27 +46,26 @@
         console.log(queryString);
 
         axios({
-                method: 'POST',
-                url: 'send_SMS_Invoice' + queryString,
-                data: {
-                    USER: USER,
-                    PW: PW,
-                }
-            }).then(function(response) {
+            method: 'POST',
+            url: 'send_SMS_Invoice' + queryString,
+            data: {
+                USER: USER,
+                PW: PW,
+            }
+        }).then(function(response) {
 
-                // console.log(response);
-                if (response.data.Code) {
-                    var str = JSON.stringify(response.data, undefined, 4);
+            // console.log(response);
+            if (response.data.Code) {
+                var str = JSON.stringify(response.data, undefined, 4);
 
-                    output(str);
+                output(str);
 
-                } else {
-                    location.reload();
-                }
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+            } else {
+                location.reload();
+            }
+        }).catch(function(error) {
+            console.log(error);
+        });
 
         $(".background_loading").css("display", "none");
     }

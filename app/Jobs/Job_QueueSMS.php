@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Exception;
+use App\Jobs\Job_QueueInsertSMS;
 
 class Job_QueueSMS implements ShouldQueue
 {
@@ -24,6 +25,12 @@ class Job_QueueSMS implements ShouldQueue
      */
 
     private $customer;
+
+    public $tries = 2;
+    public $backoff = 5 * 60;
+
+    public static $obj2;
+    public static $phone;
 
     public function __construct($customer)
     {
@@ -90,113 +97,150 @@ class Job_QueueSMS implements ShouldQueue
     public function Send_SMS($cus_data)
     {
 
-        try {
+        date_default_timezone_set('Asia/bangkok');
+        $dateNow = date('Y-m-d');
 
-            date_default_timezone_set('Asia/bangkok');
-            $dateNow = date('Y-m-d');
+        $datestamp = date('Y-m-d');
+        $timestamp = date('H:i:s');
 
-            $datestamp = date('Y-m-d');
-            $timestamp = date('H:i:s');
+        $phone = '66' . mb_substr($cus_data->PHONE, 1);
+        // $phone = '66804817163';
+        self::$phone = $phone;
 
-            $phone = '66' . mb_substr($cus_data->PHONE, 1);
-            // $phone = '66804817163';
+        $split_str = explode("-", $cus_data->DUE_DATE);
 
-            $split_str = explode("-", $cus_data->DUE_DATE);
+        $strMonthCut = array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+        $strMonthThai = $strMonthCut[(int)$split_str[1]];
 
-            $strMonthCut = array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
-            $strMonthThai = $strMonthCut[(int)$split_str[1]];
+        $year = substr(($split_str[0] + 543), -2);
 
-            $year = substr(($split_str[0] + 543), -2);
+        $textDate = $split_str[2] . " " . $strMonthThai . " " . $year;
+        // dd($textDate);
+        // printf();
+        $data_arry = array(
+            'user' => "ufund_official",
+            'password' => "ufund@2022",
+            'msisdn' => $phone,
+            'sid' => "UFUND TH",
+            'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
+            'fl' => "0",
+            'dc' => "8",
+        );
 
-            $textDate = $split_str[2] . " " . $strMonthThai . " " . $year;
-            // dd($textDate);
-            // printf();
-            $data_arry = array(
-                'user' => "ufund_official",
-                'password' => "ufund@2022",
-                'msisdn' => $phone,
-                'sid' => "UFUND TH",
-                'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
-                'fl' => "0",
-                'dc' => "8",
-            );
+        list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
 
-            list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
-
-            $obj2 = json_decode($content);
-            // dd($obj2);
-            $datestamp = date('Y-m-d');
-            $timestamp = date('H:i:s');
-
-
-            $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
-                ->where('date', $dateNow)
-                ->get();
-
-            DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
-                'DATE' => $dateNow,
-                'RUNNING_NO' => $new_id[0]->new_id,
-                'QUOTATION_ID' => $cus_data->QUOTATION_ID,
-                'APP_ID' => $cus_data->APP_ID,
-                'TRANSECTION_TYPE' => 'INVOICE',
-                'TRANSECTION_ID' => $cus_data->INVOICE_ID,
-                'SMS_RESPONSE_CODE' => $obj2->ErrorCode,
-                'SMS_RESPONSE_MESSAGE' => $obj2->ErrorMessage,
-                'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
-                'SEND_DATE' => $datestamp,
-                'SEND_TIME' => $timestamp,
-                'SEND_Phone' => $phone,
-                'CONTRACT_ID' => $cus_data->CONTRACT_ID,
-                'DUE_DATE' => $cus_data->DUE_DATE,
-            ]);
-
-            if ($obj2->MessageData) {
-                $txt_message = '';
-                $msg = $obj2->MessageData[0]->MessageParts;
-                for ($x = 0; $x < count($msg); $x++) {
-                    $txt_message .=  $msg[$x]->Text;
-                }
-                DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                    ->where('SMS_RESPONSE_JOB_ID',  $obj2->JobId)
-                    ->update([
-                        'SMS_RESPONSE_MSG_ID' => $msg[0]->MsgId,
-                        'SMS_TEXT_MESSAGE' => $txt_message,
-                        'SMS_CREDIT_USED' => count($msg),
-                    ]);
-            }
-
-        } catch (Exception $e) {
-
-            date_default_timezone_set('Asia/bangkok');
-            $datestamp = date('Y-m-d');
-            $timestamp = date('H:i:s');
-            $new_error_id = date("Ymdhis");
-            
-            DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
-                'DATE' => $dateNow,
-                'RUNNING_NO' => $new_id[0]->new_id,
-                'QUOTATION_ID' => $cus_data->QUOTATION_ID,
-                'APP_ID' => $cus_data->APP_ID,
-                'TRANSECTION_TYPE' => 'INVOICE',
-                'TRANSECTION_ID' => $cus_data->INVOICE_ID,
-                'SMS_RESPONSE_CODE' => '0x00',
-                'SMS_RESPONSE_MESSAGE' => 'UFUND SYSTEM ERROR',
-                'SMS_RESPONSE_JOB_ID' => 'ERROR-' . $new_error_id,
-                'SEND_DATE' => $datestamp,
-                'SEND_TIME' => $timestamp,
-                'SEND_Phone' => $phone,
-                'CONTRACT_ID' => $cus_data->CONTRACT_ID,
-                'DUE_DATE' => $cus_data->DUE_DATE,
-                'SMS_TEXT_MESSAGE' => $e->getMessage(),
-            ]);
-
-            $return_data = new \stdClass();
-
-            $return_data->Code = '0X0MB0000';
-            $return_data->Status =  $e->getMessage();
-
-            return $return_data;
-        }
+        $obj2 = json_decode($content);
+        self::$obj2 = $obj2;
+        Job_QueueInsertSMS::dispatch($obj2, $cus_data, $phone)->onQueue('site_sms_insert');
     }
+
+
+    public function failed($e)
+    {
+
+        $cus_data = $this->customer;
+
+        date_default_timezone_set('Asia/bangkok');
+        $dateNow = date('Y-m-d');
+        $datestamp = date('Y-m-d');
+        $timestamp = date('H:i:s');
+        $new_error_id = date("Ymdhis");
+
+        $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+            ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
+            ->where('date', $dateNow)
+            ->get();
+
+        DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+            'DATE' => $dateNow,
+            'RUNNING_NO' => $new_id[0]->new_id,
+            'QUOTATION_ID' => $cus_data->QUOTATION_ID,
+            'APP_ID' => $cus_data->APP_ID,
+            'TRANSECTION_TYPE' => 'INVOICE',
+            'TRANSECTION_ID' => $cus_data->INVOICE_ID,
+            'SMS_RESPONSE_CODE' => '0x00',
+            'SMS_RESPONSE_MESSAGE' => 'API ERROR',
+            'SMS_RESPONSE_JOB_ID' => 'ERROR' . $new_error_id,
+            'SEND_DATE' => $datestamp,
+            'SEND_TIME' => $timestamp,
+            'SEND_Phone' => self::$phone,
+            'CONTRACT_ID' => $cus_data->CONTRACT_ID,
+            'DUE_DATE' => $cus_data->DUE_DATE,
+            'SMS_TEXT_MESSAGE' => $e->getMessage(),
+        ]);
+    }
+
+    // public function Send_SMS($cus_data)
+    // {
+
+    //     try {
+
+    //         date_default_timezone_set('Asia/bangkok');
+    //         $dateNow = date('Y-m-d');
+
+    //         $datestamp = date('Y-m-d');
+    //         $timestamp = date('H:i:s');
+
+    //         $phone = '66' . mb_substr($cus_data->PHONE, 1);
+    //         // $phone = '66804817163';
+
+    //         $split_str = explode("-", $cus_data->DUE_DATE);
+
+    //         $strMonthCut = array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+    //         $strMonthThai = $strMonthCut[(int)$split_str[1]];
+
+    //         $year = substr(($split_str[0] + 543), -2);
+
+    //         $textDate = $split_str[2] . " " . $strMonthThai . " " . $year;
+    //         // dd($textDate);
+    //         // printf();
+    //         $data_arry = array(
+    //             'user' => "ufund_official",
+    //             'password' => "ufund@2022",
+    //             'msisdn' => $phone,
+    //             'sid' => "UFUND TH",
+    //             'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
+    //             'fl' => "0",
+    //             'dc' => "8",
+    //         );
+
+    //         list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+
+    //         $obj2 = json_decode($content);
+
+    //         Job_QueueInsertSMS::dispatch($obj2, $cus_data, $phone)->onQueue('site_sms_insert');
+
+    //         // dd($obj2);
+
+    //     } catch (Exception $e) {
+
+    //         date_default_timezone_set('Asia/bangkok');
+    //         $datestamp = date('Y-m-d');
+    //         $timestamp = date('H:i:s');
+    //         $new_error_id = date("Ymdhis");
+
+    //         $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+    //             ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
+    //             ->where('date', $dateNow)
+    //             ->get();
+
+    //         DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+    //             'DATE' => $dateNow,
+    //             'RUNNING_NO' => $new_id[0]->new_id,
+    //             'QUOTATION_ID' => $cus_data->QUOTATION_ID,
+    //             'APP_ID' => $cus_data->APP_ID,
+    //             'TRANSECTION_TYPE' => 'INVOICE',
+    //             'TRANSECTION_ID' => $cus_data->INVOICE_ID,
+    //             'SMS_RESPONSE_CODE' => '0x00',
+    //             'SMS_RESPONSE_MESSAGE' => 'API ERROR',
+    //             'SMS_RESPONSE_JOB_ID' => 'ERROR' . $new_error_id,
+    //             'SEND_DATE' => $datestamp,
+    //             'SEND_TIME' => $timestamp,
+    //             'SEND_Phone' => $phone,
+    //             'CONTRACT_ID' => $cus_data->CONTRACT_ID,
+    //             'DUE_DATE' => $cus_data->DUE_DATE,
+    //             'SMS_TEXT_MESSAGE' => $e->getMessage(),
+    //         ]);
+    //     }
+    // }
 }

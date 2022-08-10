@@ -140,8 +140,9 @@
                                         id="select_type">
                                         <option value="" selected>ทั้งหมด</option>
                                         <option value="INVOICE">INVOICE</option>
-                                        <option value="RECEIPT">RECEIPT</option>
-                                        <option value="TAX">TAX</option>
+                                        {{-- <option value="RECEIPT">RECEIPT</option>
+                                        <option value="TAX">TAX</option> --}}
+                                        <option value="Other">อื่น</option>
                                     </select>
                                 </div>
                             </div>
@@ -241,7 +242,8 @@
                             <tr>
                                 <th scope="col">
                                     <label class="form-check-label label-inline-tb">
-                                        <input class="form-check-input me-1" type="checkbox" value="" id="all_id">SMS_ID
+                                        {{-- <input class="form-check-input me-1" type="checkbox" value="" id="all_id"> --}}
+                                        SMS_ID
                                     </label>
                                 </th>
                                 <th scope="col">DATE_Create</th>
@@ -252,9 +254,10 @@
                                 <th scope="col">TRANSECTION_TYPE</th>
                                 <th scope="col">TRANSECTION_ID</th>
                                 <th scope="col">DUE_DATE</th>
-                                <th scope="col">SMS_RESPONSE_MESSAGE</th>
-                                <th scope="col">SMS_RESPONSE_JOB_ID</th>
+                                <th scope="col">SMS_MESSAGE</th>
+                                <th scope="col">SMS_JOB_ID</th>
                                 <th scope="col">DateTime_Send</th>
+                                <th scope="col">StatusDeliver</th>
                                 <th scope="col">Detail_SMS</th>
                             </tr>
                         </thead>
@@ -284,10 +287,10 @@
 
                 <hr>
 
-                <div class="container-fluid">
+                {{-- <div class="container-fluid">
                     <nav aria-label="Page">
-                        <ul class="pagination justify-content-center flex-wrap" id="page_num">
-                            {{-- <li class="page-item">
+                        <ul class="pagination justify-content-center flex-wrap" id="page_num_old">
+                            <li class="page-item">
                                 <a class="page-link" href="#" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
@@ -297,6 +300,48 @@
                             <li class="page-item"><a class="page-link" href="#">3</a></li>
                             <li class="page-item">
                                 <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </nav>
+                </div> --}}
+
+
+                <div class="container-fluid">
+                    <div class="text-end text-muted fs-6">
+                        <span id="txt_viewof"></span>
+                    </div>
+                    <nav aria-label="Page">
+                        <ul class="pagination justify-content-center flex-wrap" id="page_num">
+                            {{-- <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" id="Icon_prev">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item ms-1 me-1" style="padding: 0.375rem 0rem;">
+                                <span>Page</span>
+                            </li>
+                            <li class="page-item ms-1 me-1">
+                                <input class="input-group-text bg-white text-dark" id="page_input" type="tel"
+                                    size="3">
+                            </li>
+                            <li class="page-item ms-1 me-1" style="padding: 0.375rem 0rem;">
+                                <span>of</span> <span id="last_page">0</span>
+                            </li>
+                            <li class="page-item" id="Icon_next">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li> --}}
@@ -405,7 +450,8 @@
                                 <span>ข้อความ : UFUND จัดส่งใบแจ้งหนี้ สามารถชำระด้วย QR code บน Mobile Banking และไม่ต้องนำหลักฐานการโอนแจ้งกลับ กรุณารอใบเสร็จในระบบภายใน 7 วันทำการ คลิ๊ก https://ufund.comseven.com/Runtime/Runtime/Form/INVView/?INVOICE_ID=xxxx</span> --}}
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
@@ -413,7 +459,6 @@
                 </div>
 
             </div>
-
             {{-- <footer class="footer text-center">
                 © 2021 SMS Admin by <a href="https://www.wrappixel.com/">wrappixel.com</a>
             </footer> --}}
@@ -594,7 +639,7 @@
                                         สถานะ
                                     </div>
                                     <div class="col-9">
-                                        <span class="${item.SMS_RESPONSE_CODE == '000' ? 'text-success' : 'text-danger'}"> ${item.SMS_RESPONSE_MESSAGE} </span>
+                                        <span class="${item.SMS_Status_Delivery == '#DELIVRD' ? 'text-success' : 'text-danger'}"> ${item.SMS_Status_Delivery  == null ? '-' : item.SMS_Status_Delivery} </span>
                                     </div>
                                 </div>
                                 <hr>
@@ -679,7 +724,7 @@
 
 
         $('#select_type').on('change', function() {
-            if ($(this).val() != '') {
+            if ($(this).val() != '' && $(this).val() != 'Other') {
                 $("#input_type_txt_search").removeAttr('disabled');
                 $("#input_type_txt_search").attr('placeholder', $(this).val() + ' ID')
             } else {
@@ -709,6 +754,17 @@
             let num_page = $('#num_per_page').find(":selected").val();
             get_form_search(url, num_page);
         });
+
+        function changPage(page, iurl , last_page) {
+            if (page != parseInt(page, 10)){
+                page = 1;
+            }else if(page > last_page){
+                page = last_page
+            }
+            let url = iurl + '?page=' + page;
+            let num_page = $('#num_per_page').find(":selected").val();
+            get_form_search(url, num_page);
+        }
 
 
         $('#num_per_page').on('change', function() {
@@ -811,7 +867,8 @@
         }
 
 
-        function get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date, quick_select, quick_text) {
+        function get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date,
+            quick_select, quick_text) {
             if (typeof(num_page) == "undefined" && num_page == null) {
                 num_page = 10;
             }
@@ -843,44 +900,90 @@
                     // console.log(response.data);
                     // console.log(response.data.data.links)
                     links = response.data.data.links;
-
+                    collect = response.data;
+                    prev_page_url = response.data.data.prev_page_url
+                    next_page_url = response.data.data.next_page_url
+                    // paging
                     $('#sum_count_Data').text(numberWithCommas(response.data.data.total))
 
+                    // $('#Icon_prev').html(
+                    //     `<a class="page-link" href="${ prev_page_url ? prev_page_url : '#'}" aria-label="Prev">
+                    //         <span aria-hidden="true">&lsaquo;</span>
+                    //     </a>`
+                    // )
+                    // $('#Icon_next').html(
+                    //     `<a class="page-link" href="${next_page_url ? next_page_url : '#'}" aria-label="Next">
+                    //         <span aria-hidden="true">&rsaquo;</span>
+                    //     </a>`
+                    // )
+
+                    html_pageOld = '';
                     html_page = '';
-                    // for (let i = 0; i < links.length; i++) {
-                    //     class_ = links[i].url == null ? 'page-item disabled' : 'page-item';
-                    //     acive = links[i].active == false ? '' : 'active';
-                    //     html_page += '<li class="' + class_ + ' ' + acive +
-                    //         '"><a class="page-link" href="' + links[i]
-                    //         .url + '">' + links[i].label + '</a></li>'
-                    // }
-                    // $('#page_num').html(html_page)
-
-                    links.forEach((links, index) => {
-                        // html_page += `
-                        // <li class="page-item ${links.url == null ? 'disabled' : ''}  ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
-                        // `
-                        if( links.label == "&laquo; Previous" || links.label == "Next &raquo;"){
-
-                            typeIcon = links.label.includes("Previous") == true ? 'Previous' : 'Next';
-                            Icon = links.label.includes("&laquo;") == true ? '&laquo;' : '&raquo;';
-
-                            html_page += `
-                             <li class="page-item ${links.url == null ? 'disabled' : ''} ">
-                                <a class="page-link" href="${links.url}" aria-label="${typeIcon}">
-                                    <span aria-hidden="true">${Icon}</span>
-                                    <span class="sr-only">${typeIcon}</span>
+                    html_page = `
+                            <li class="page-item ${response.data.data.prev_page_url == null ? 'disabled' : ''}">
+                                <a class="page-link" href="${response.data.data.first_page_url}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                            `
-                        }else{
-                            html_page += `
-                            <li class="page-item ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
-                            `
-                        }
-                        
-                    })
+                            <li class="page-item ${response.data.data.prev_page_url == null ? 'disabled' : ''}" id="Icon_prev">
+                                <a class="page-link" href="${response.data.data.prev_page_url}" aria-label="Next">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item ms-1 me-1" style="padding: 0.375rem 0rem;">
+                                <span>Page</span>
+                            </li>
+                            <li class="page-item ms-1 me-1">
+                                <input class="input-group-text bg-white text-dark" id="page_input" type="text" size="3" value="${response.data.data.current_page}">
+                            </li>
+                            <li class="page-item ms-1 me-1" style="padding: 0.375rem 0rem;">
+                                <span>of</span> <span id="last_page"> ${response.data.data.last_page} </span>
+                            </li>
+                            <li class="page-item ${response.data.data.next_page_url == null ? 'disabled' : ''}">
+                                <a class="page-link" href="${response.data.data.next_page_url}" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item ${response.data.data.next_page_url == null ? 'disabled' : ''}">
+                                <a class="page-link" href="${response.data.data.last_page_url}" aria-label="Previous">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>`;
+
+                    // links.forEach((links, index) => {
+                    //     if (links.label == "&laquo; Previous" || links.label == "Next &raquo;") {
+
+                    //         typeIcon = links.label.includes("Previous") == true ? 'Previous' :
+                    //             'Next';
+                    //         Icon = links.label.includes("&laquo;") == true ? '&laquo;' : '&raquo;';
+
+                    //         html_pageOld += `
+                    //          <li class="page-item ${links.url == null ? 'disabled' : ''} ">
+                    //             <a class="page-link" href="${links.url}" aria-label="${typeIcon}">
+                    //                 <span aria-hidden="true">${Icon}</span>
+                    //                 <span class="sr-only">${typeIcon}</span>
+                    //             </a>
+                    //         </li>
+                    //         `
+                    //     } else {
+                    //         html_pageOld += `
+                    //         <li class="page-item ${links.active == false ? '' : 'active'}"><a class="page-link" href="${links.url}"> ${links.label} </a></li>
+                    //         `
+                    //     }
+
+                    // })
+                    // $('#page_num_old').html(html_pageOld)
+
+                    $('#txt_viewof').text(`View ${response.data.data.from} - ${response.data.data.to} of ${response.data.data.total}`)
+
                     $('#page_num').html(html_page)
+
+                    document.querySelector('#page_input').addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            // code for enter
+                            changPage($('#page_input').val(), response.data.data.path, response.data.data.last_page)
+                        }
+                    });
 
                     html = '';
                     item = response.data.data.data;
@@ -888,7 +991,7 @@
                         html += `
                         <tr>
                             <td scope="col">${item.SMS_ID != null ? item.SMS_ID : null}</td>
-                            <td scope="col" class="text-muted">${format_date(item.DATE)}</td>
+                            <td scope="col">${format_date(item.DATE)}</td>
                             <td scope="col">${item.CONTRACT_ID  == null ? '-' : item.CONTRACT_ID}</td>
                             <td scope="col">${item.QUOTATION_ID == null ? '-' : item.QUOTATION_ID}</td>
                             <td scope="col">${item.APP_ID  == null ? '-' : item.APP_ID}</td>
@@ -899,6 +1002,7 @@
                             <td scope="col"><span class="${item.SMS_RESPONSE_CODE == '000' ? 'text-success' : 'text-danger'}"> ${item.SMS_RESPONSE_MESSAGE} </span></td>
                             <td scope="col">${item.SMS_RESPONSE_JOB_ID == null ? '-' : item.SMS_RESPONSE_JOB_ID}</td>
                             <td scope="col">${format_date(item.SEND_DATE)}  ${item.SEND_TIME.split('.')[0]}</td>
+                            <td scope="col"><span class="${item.SMS_Status_Delivery == '#DELIVRD' ? 'text-success' : 'text-danger'}"> ${item.SMS_Status_Delivery  == null ? '-' : item.SMS_Status_Delivery} </span></td>
                             <td scope="col"><button type="button" id="btn_sms_deatail" class="btn btn-info btn-sm text-white">Detail</button></td>
                         </tr>
                         `

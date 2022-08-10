@@ -64,11 +64,15 @@
     {{-- Pusher Broadcast --}}
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
+    {{-- Bootstrap 4 Chartjs pie chart --}}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
+
 </head>
 
 <body>
 
     @include('Template.Loading')
+
     {{-- <div class="loading" style="display: none">Loading&#8230;</div> --}}
 
     <!-- ============================================================== -->
@@ -252,6 +256,54 @@
                         </div>
                     </div>
                 </div>
+
+
+                {{-- Chart --}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title col-sm-12 col-md-8 mb-md-0 mb-3 align-self-center">สรุปผลการส่ง
+                                    SMS
+                                </h4>
+                                <div class="page-content page-container" id="page-content">
+                                    <div class="padding">
+                                        <div class="row">
+                                            <div class="container-fluid d-flex justify-content-center">
+                                                <div class="col-sm-8 col-md-6">
+                                                    <div class="card">
+                                                        <div class="card-body" style="height: auto;">
+                                                            <div class="chartjs-size-monitor"
+                                                                style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                                                                <div class="chartjs-size-monitor-expand"
+                                                                    style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                                                    <div
+                                                                        style="position:absolute;width:1000000px;height:1000000px;left:0;top:0">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="chartjs-size-monitor-shrink"
+                                                                    style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                                                    <div
+                                                                        style="position:absolute;width:200%;height:200%;left:0; top:0">
+                                                                    </div>
+                                                                </div>
+                                                            </div> <canvas id="chart-line" width="299"
+                                                                height="200" class="chartjs-render-monitor"
+                                                                style="display: block; width: 299px; height: 200px;"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- ============================================================== -->
                 <!-- Table -->
                 <!-- ============================================================== -->
@@ -339,7 +391,6 @@
         <!-- End main-wrapper  -->
 
 
-
         <div class="modal fade" tabindex="-1" id="Modal_alert" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1">
             <div class="modal-dialog">
@@ -369,6 +420,8 @@
 
 <script>
     $(document).ready(function() {
+
+        var env = '{{ env('APP_ENV') }}';
 
         var token = document.head.querySelector('meta[name="csrf-token"]');
         window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
@@ -409,6 +462,7 @@
         SMS_Check_Credit();
         SMS_Check_Sender();
         option_count_type();
+        chart();
         // setInterval(SMS_Check_Credit, 2000);
 
         function SMS_Check_Credit(iurl, id, type, number) {
@@ -623,6 +677,64 @@
                 SMS_Check_Sender()
             }, 4000 * i);
             // console.log('countTime = ' + countTime);
+        }
+
+        function chart() {
+            axios({
+                    method: 'GET',
+                    url: 'Chart_overiview',
+                }).then(function(response) {
+                    console.log(response.data)
+                    var ctx = $("#chart-line");
+                    var myLineChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ["Success#Deliver", "Success#Undeliver",
+                                "Success#StatusUnknown", "Success#WaitCheckDeliver", "SystemError", "Invalid mobile numbers"
+                            ],
+                            datasets: [{
+                                data: [
+                                    response.data.SuccessDeliver,
+                                    response.data.SuccessUndeliver,
+                                    response.data.SuccessStatusUnknown,
+                                    response.data.SuccessWaitCheck,
+                                    response.data.SYSTEM_ERROR,
+                                    response.data.Invalid_mobile
+                                ],
+                                backgroundColor: [
+                                    "rgba(85, 206, 99, 1)",
+                                    "rgba(77, 159, 226, 1)",
+                                    "rgba(240, 197, 92, 1)", 
+                                    "rgba(229, 250, 4, 0.8)",
+                                    "rgba(255, 0, 0, 0.8)",
+                                    "rgba(139, 130, 130, 1)"
+                                ]
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                // text: 'Weather'
+                            }
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    Snackbar.show({
+                        actionText: 'close',
+                        pos: 'top-center',
+                        duration: 15000,
+                        actionTextColor: '#dc3545',
+                        backgroundColor: '#323232',
+                        width: 'auto',
+                        text: error,
+                        onClose: function() {
+                            location.reload();
+                        }
+                    });
+                });
+
         }
 
 
