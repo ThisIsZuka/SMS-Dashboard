@@ -9,11 +9,13 @@ use App\Http\Controllers\Cookie_Controller;
 
 use App\Http\Controllers\API_Service_SMS;
 use App\Http\Controllers\API_Service_Mail;
+use App\Http\Controllers\Queue_Job;
 
 use App\Http\Controllers\Admin_Dashbord;
 use App\Http\Controllers\Admin_Detail_SMS;
 use App\Http\Controllers\API_SCB;
 use App\Http\Controllers\API_Sandbox_SCB;
+
 
 
 
@@ -78,6 +80,7 @@ Route::group(['middleware' => ['authLogin']], function () {
 });
 
 
+Route::get('/Chart_overiview', [Admin_Dashbord::class, 'Chart_overiview']);
 
 Route::post('/get_cookie', [Cookie_Controller::class, 'Get_cookieByName']);
 
@@ -114,9 +117,9 @@ Route::middleware(['basicAuth'])->group(function () {
     Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
 });
 
+Route::get('/Queue_Job', [Queue_Job::class, 'GetQueue']);
+
 Route::get('/test_send_SMS', [API_Service_SMS::class, 'test_send_SMS']);
-
-
 
 // Mail Nipamail API
 Route::get('/test_Mail', [API_Service_Mail::class, 'PostRequest_Mail']);
@@ -124,7 +127,9 @@ Route::get('/test_Mail', [API_Service_Mail::class, 'PostRequest_Mail']);
 // Route::get('/conf_sms', [API_Service_Mail::class, 'conf_sms_send']);
 
 
+Route::get('/TestScheduling', [Queue_Job::class, 'TestScheduling']);
 
+Route::get('/TestSCB', [API_SCB::class, 'Test']);
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -135,19 +140,19 @@ Route::get('index', function () {
 
 Route::get('/queueTest', [API_Service_SMS::class, 'queueTest']);
 
-// Route::get('/scb_send_qrdown', [API_SCB::class, 'SCB_Create_QR_Code']);
+Route::get('/scb', [API_SCB::class, 'SCB_Create_QR_Code']);
 
-// Route::get('/SCB_Check_slip', [API_SCB::class, 'SCB_Check_slip']);
+Route::get('/SCB_Check_slip', [API_SCB::class, 'SCB_Check_slip']);
 
-// Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
+Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
 
 
-Route::get('/scb_send_qrdown', [API_Sandbox_SCB::class, 'SCB_Create_QR_Code']);
+// Route::get('/scb_send_qrdown', [API_Sandbox_SCB::class, 'SCB_Create_QR_Code']);
 
-Route::get('/SCB_Check_slip', [API_Sandbox_SCB::class, 'SCB_Check_slip']);
+// Route::get('/SCB_Check_slip', [API_Sandbox_SCB::class, 'SCB_Check_slip']);
 
-Route::get('/SCB_TransactionInquiry', [API_Sandbox_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
+// Route::get('/SCB_TransactionInquiry', [API_Sandbox_SCB::class, 'SCB_Payment_Transaction_Inquiry']);
 
-Route::get('/SCB_OauthToken', [API_Sandbox_SCB::class, 'SCB_OauthToken']);
+// Route::get('/SCB_OauthToken', [API_Sandbox_SCB::class, 'SCB_OauthToken']);
 
 

@@ -26,6 +26,7 @@ class JWT_Token
     public function handle(Request $request, Closure $next)
     {
         try {
+            
             $data = $request->all();
             $headers = $request->header();
 

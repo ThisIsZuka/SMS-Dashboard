@@ -232,7 +232,7 @@ class API_Service_SMS extends BaseController
     }
 
 
-    
+
     public function submit_send_SMS_Invoice_optimize(Request $request)
     {
         try {
@@ -245,14 +245,13 @@ class API_Service_SMS extends BaseController
 
             for ($i = 0; $i < count($list_sendSMS); $i++) {
 
-                Job_QueueSMS::dispatch($list_sendSMS[$i]);
-
+                Job_QueueSMS::dispatch($list_sendSMS[$i])->onQueue('site_main');
             }
 
             $return_data->Code = '999999';
             $return_data->Status = 'SMS Processing';
             return $return_data;
-
+            
         } catch (Exception $e) {
             $return_data = new \stdClass();
 
@@ -261,7 +260,6 @@ class API_Service_SMS extends BaseController
 
             return $return_data;
         }
-
     }
 
 
@@ -607,20 +605,32 @@ class API_Service_SMS extends BaseController
     public function queueTest()
     {
         try {
-          
-            $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '01-01-2022' "));
 
-            for ($x = 1; $x < 10; $x++) {
-              // var_dump($x);
-            //   if($x % 2 == 0){
-            //     CalculateDataJob::dispatch($list_sendSMS[$x]);
-            //   }else{
-            //     CalculateDataJob::dispatch($list_sendSMS[$x]);
-            //   }
-            Job_QueueSMS::dispatch($list_sendSMS[$x]);
-            }
+            // $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '01-01-2022' "));
 
-            return true;
+            // for ($x = 1; $x < 10; $x++) {
+            //   // var_dump($x);
+            // //   if($x % 2 == 0){
+            // //     CalculateDataJob::dispatch($list_sendSMS[$x]);
+            // //   }else{
+            // //     CalculateDataJob::dispatch($list_sendSMS[$x]);
+            // //   }
+            // Job_QueueSMS::dispatch($list_sendSMS[$x]);
+            // }
+
+
+            $LOG_SEND_SMS = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->select('SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
+                ->where('SMS_Status_Delivery', '')
+                ->orWhereNull('SMS_Status_Delivery')
+                ->get();
+
+            if (count($LOG_SEND_SMS) <= 0) return count($LOG_SEND_SMS);
+
+            echo '456';
+            // $response = Http::get('https://api-uat.partners.scb/partners/v1/payment/billpayment/transactions/' . $data['transectionId'] . '?sendingBank=014');
+
+            return $LOG_SEND_SMS;
         } catch (Exception $ex) {
             echo $ex->getMessage();
         }
@@ -636,10 +646,9 @@ class API_Service_SMS extends BaseController
             $user = 'ufund_official';
             $password = 'ufund@2022';
 
-            $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user='.$user.'&password='.$password.'&messageid='.$data['msgId']);
+            $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user=' . $user . '&password=' . $password . '&messageid=' . $data['msgId']);
 
             return $response;
-
         } catch (Exception $e) {
 
             return response()->json(array(
@@ -648,10 +657,10 @@ class API_Service_SMS extends BaseController
                 'message' => $e->getMessage(),
             ));
         }
-
     }
 
-    public function TestSending(){
+    public function TestSending()
+    {
 
         $data_arry = array(
             'user' => "ufund_official",
@@ -672,5 +681,4 @@ class API_Service_SMS extends BaseController
 
         return $obj2;
     }
-
 }

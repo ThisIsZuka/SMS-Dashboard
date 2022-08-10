@@ -104,8 +104,8 @@ class API_Sandbox_SCB extends BaseController
                 "qrType" => "PP",
                 "ppType" => "BILLERID",
                 "ppId" => "526446253766021",
-                // "amount" => $DB_APPL_TRANS[0]->PREMIUM_AMT,
-                "amount" => "1.00",
+                "amount" => $DB_APPL_TRANS[0]->PREMIUM_AMT,
+                // "amount" => "1.00",
                 "ref1" => $DB_APPL_TRANS[0]->PAYMENT_REF1,
                 "ref2" => $ref2,
                 "ref3" => "IYV"
@@ -118,7 +118,7 @@ class API_Sandbox_SCB extends BaseController
             }
             
 
-            $DB_SEQ_ID = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')->insertGetId([
+            $DB_QRD_ID = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')->insertGetId([
                 // 'SEQ_ID' => $SEQ_ID,
                 'PAYMENT_REF1' => $DB_APPL_TRANS[0]->PAYMENT_REF1,
                 'PAYMENT_REF2' => $ref2,
@@ -128,7 +128,7 @@ class API_Sandbox_SCB extends BaseController
                 'UUID' => $uuid,
             ]);
 
-            return $res_data;
+            // return $res_data;
 
             // dd($SEQ_ID);
             // dd($res_data);
@@ -138,103 +138,103 @@ class API_Sandbox_SCB extends BaseController
 
             $API_Service_SMS = new API_Service_SMS;
 
-            // $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : https://43.254.133.148/Runtime/Runtime/Form/QRDownPayment/?SEQ_ID=" . $DB_SEQ_ID;
-            // $data_arry = array(
-            //     'user' => "ufund_official",
-            //     'password' => "ufund@2022",
-            //     'msisdn' => $phone,
-            //     'sid' => "UFUND TH",
-            //     'msg' => $msg_send,
-            //     'fl' => "0",
-            //     'dc' => "8",
-            // );
+            $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : https://43.254.133.148/Runtime/Runtime/Form/QRDownPayment/?QRD_ID=" . $DB_QRD_ID;
+            $data_arry = array(
+                'user' => "ufund_official",
+                'password' => "ufund@2022",
+                'msisdn' => $phone,
+                'sid' => "UFUND TH",
+                'msg' => $msg_send,
+                'fl' => "0",
+                'dc' => "8",
+            );
 
-            // list($header, $content) = $API_Service_SMS->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
-            // $obj2 = json_decode($content);
-            // // dd($obj2);
-            // $datestamp = date('Y-m-d');
-            // $timestamp = date('H:i:s');
+            list($header, $content) = $API_Service_SMS->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+            $obj2 = json_decode($content);
+            // dd($obj2);
+            $datestamp = date('Y-m-d');
+            $timestamp = date('H:i:s');
 
-            // $DB_CustomerData = DB::connection('sqlsrv_HPCOM7')->table('dbo.APPLICATION')
-            //     ->select('APPLICATION.QUOTATION_ID', 'APPLICATION.APP_ID', 'CONTRACT.CONTRACT_ID')
-            //     ->leftJoin('CONTRACT', 'CONTRACT.APPLICATION_NUMBER', '=', 'APPLICATION.APPLICATION_NUMBER')
-            //     ->where('APPLICATION.APPLICATION_NUMBER', $DB_APPL_TRANS[0]->APPL_NO)
-            //     ->get();
+            $DB_CustomerData = DB::connection('sqlsrv_HPCOM7')->table('dbo.APPLICATION')
+                ->select('APPLICATION.QUOTATION_ID', 'APPLICATION.APP_ID', 'CONTRACT.CONTRACT_ID')
+                ->leftJoin('CONTRACT', 'CONTRACT.APPLICATION_NUMBER', '=', 'APPLICATION.APPLICATION_NUMBER')
+                ->where('APPLICATION.APPLICATION_NUMBER', $DB_APPL_TRANS[0]->APPL_NO)
+                ->get();
 
-            // $new_SendSMS_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-            //     ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
-            //     ->where('date', $dateNow)
-            //     ->get();
+            $new_SendSMS_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
+                ->where('date', $dateNow)
+                ->get();
 
-            // try {
+            try {
 
-            //     DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
-            //         'DATE' => $dateNow,
-            //         'RUNNING_NO' => $new_SendSMS_id[0]->new_id,
-            //         'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
-            //         'APP_ID' => $DB_CustomerData[0]->APP_ID,
-            //         'TRANSECTION_TYPE' => 'DownPayment',
-            //         'TRANSECTION_ID' => 'SEQID_' . $DB_SEQ_ID,
-            //         'SMS_RESPONSE_CODE' => $obj2->ErrorCode,
-            //         'SMS_RESPONSE_MESSAGE' => $obj2->ErrorMessage,
-            //         'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
-            //         'SEND_DATE' => $datestamp,
-            //         'SEND_TIME' => $timestamp,
-            //         'SEND_Phone' => $phone,
-            //         'CONTRACT_ID' => $DB_CustomerData[0]->CONTRACT_ID,
-            //     ]);
+                DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+                    'DATE' => $dateNow,
+                    'RUNNING_NO' => $new_SendSMS_id[0]->new_id,
+                    'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
+                    'APP_ID' => $DB_CustomerData[0]->APP_ID,
+                    'TRANSECTION_TYPE' => 'DownPayment',
+                    'TRANSECTION_ID' => 'QRDID_' . $DB_QRD_ID,
+                    'SMS_RESPONSE_CODE' => $obj2->ErrorCode,
+                    'SMS_RESPONSE_MESSAGE' => $obj2->ErrorMessage,
+                    'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
+                    'SEND_DATE' => $datestamp,
+                    'SEND_TIME' => $timestamp,
+                    'SEND_Phone' => $phone,
+                    'CONTRACT_ID' => $DB_CustomerData[0]->CONTRACT_ID,
+                ]);
 
-            //     if ($obj2->MessageData) {
-            //         $txt_message = '';
-            //         $msg = $obj2->MessageData[0]->MessageParts;
-            //         for ($x = 0; $x < count($msg); $x++) {
-            //             $txt_message .=  $msg[$x]->Text;
-            //         }
-            //         DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-            //             ->where('SMS_RESPONSE_JOB_ID',  $obj2->JobId)
-            //             ->update([
-            //                 'SMS_RESPONSE_MSG_ID' => $msg[0]->MsgId,
-            //                 'SMS_TEXT_MESSAGE' => $txt_message,
-            //                 'SMS_CREDIT_USED' => count($msg),
-            //             ]);
-            //     }
+                if ($obj2->MessageData) {
+                    $txt_message = '';
+                    $msg = $obj2->MessageData[0]->MessageParts;
+                    for ($x = 0; $x < count($msg); $x++) {
+                        $txt_message .=  $msg[$x]->Text;
+                    }
+                    DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+                        ->where('SMS_RESPONSE_JOB_ID',  $obj2->JobId)
+                        ->update([
+                            'SMS_RESPONSE_MSG_ID' => $msg[0]->MsgId,
+                            'SMS_TEXT_MESSAGE' => $txt_message,
+                            'SMS_CREDIT_USED' => count($msg),
+                        ]);
+                }
 
 
-            //     DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_SMS_RESULT')->insert([
-            //         'SEQ_ID' => $DB_APPL_TRANS[0]->SEQ_ID,
-            //         'SEND_DATE' => $datestamp,
-            //         'SEND_TIME' => $timestamp,
-            //         'REF_NO1' => $DB_APPL_TRANS[0]->PAYMENT_REF1,
-            //         'REF_NO2' => '00',
-            //         'PAY_AMT' => $DB_APPL_TRANS[0]->PREMIUM_AMT,
-            //         'MOBILE_NO' => $DB_APPL_TRANS[0]->MOBILE_NO,
-            //         'SEND_STATUS' => 'success',
-            //         'SEND_RESULT' => 'd5906a26da074ce79a1118c3259a861e',
-            //         'SEND_MSG' => $msg_send,
-            //     ]);
+                DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_SMS_RESULT')->insert([
+                    'SEQ_ID' => $DB_APPL_TRANS[0]->SEQ_ID,
+                    'SEND_DATE' => $datestamp,
+                    'SEND_TIME' => $timestamp,
+                    'REF_NO1' => $DB_APPL_TRANS[0]->PAYMENT_REF1,
+                    'REF_NO2' => '00',
+                    'PAY_AMT' => $DB_APPL_TRANS[0]->PREMIUM_AMT,
+                    'MOBILE_NO' => $DB_APPL_TRANS[0]->MOBILE_NO,
+                    'SEND_STATUS' => 'success',
+                    'SEND_RESULT' => 'd5906a26da074ce79a1118c3259a861e',
+                    'SEND_MSG' => $msg_send,
+                ]);
 
-            // } catch (\Exception $e) {
-            //     $datestamp = date('Y-m-d');
-            //     $timestamp = date('H:i:s');
-            //     $new_error_id = date("Ymdhis");
+            } catch (\Exception $e) {
+                $datestamp = date('Y-m-d');
+                $timestamp = date('H:i:s');
+                $new_error_id = date("Ymdhis");
 
-            //     DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
-            //         'DATE' => $dateNow,
-            //         'RUNNING_NO' => $new_SendSMS_id[0]->new_id,
-            //         'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
-            //         'APP_ID' => $DB_CustomerData[0]->APP_ID,
-            //         'TRANSECTION_TYPE' => 'DownPayment',
-            //         'TRANSECTION_ID' => 'SEQID_' . $DB_SEQ_ID,
-            //         'SMS_RESPONSE_CODE' => '0x00',
-            //         'SMS_RESPONSE_MESSAGE' => 'UFUND SYSTEM ERROR',
-            //         'SMS_RESPONSE_JOB_ID' => 'ERROR-' . $new_error_id,
-            //         'SEND_DATE' => $datestamp,
-            //         'SEND_TIME' => $timestamp,
-            //         'SEND_Phone' => $phone,
-            //         'CONTRACT_ID' => $DB_CustomerData[0]->CONTRACT_ID,
-            //         'SMS_TEXT_MESSAGE' => $e->getMessage(),
-            //     ]);
-            // }
+                DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+                    'DATE' => $dateNow,
+                    'RUNNING_NO' => $new_SendSMS_id[0]->new_id,
+                    'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
+                    'APP_ID' => $DB_CustomerData[0]->APP_ID,
+                    'TRANSECTION_TYPE' => 'DownPayment',
+                    'TRANSECTION_ID' => 'QRDID_' . $DB_QRD_ID,
+                    'SMS_RESPONSE_CODE' => '0x00',
+                    'SMS_RESPONSE_MESSAGE' => 'UFUND SYSTEM ERROR',
+                    'SMS_RESPONSE_JOB_ID' => 'ERROR-' . $new_error_id,
+                    'SEND_DATE' => $datestamp,
+                    'SEND_TIME' => $timestamp,
+                    'SEND_Phone' => $phone,
+                    'CONTRACT_ID' => $DB_CustomerData[0]->CONTRACT_ID,
+                    'SMS_TEXT_MESSAGE' => $e->getMessage(),
+                ]);
+            }
 
             return $res_data;
         } catch (Exception $e) {
@@ -390,8 +390,8 @@ class API_Sandbox_SCB extends BaseController
             // dd($token);
 
             $DB_TTP_QRDown = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')
-                ->select('SEQ_ID', 'PAYMENT_REF1', 'PAYMENT_REF2', 'UUID', 'CREATE_DATE')
-                ->where('SEQ_ID', $data['QRDown_SeqId'])
+                ->select('QRD_ID', 'PAYMENT_REF1', 'PAYMENT_REF2', 'UUID', 'CREATE_DATE')
+                ->where('QRD_ID', $data['QRDown_QrdId'])
                 ->get();
 
 

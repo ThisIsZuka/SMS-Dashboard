@@ -23,10 +23,25 @@ use App\Http\Controllers\API_Service_SMS;
 class API_SCB extends BaseController
 {
 
+    // Production
+    private $url_K2QRDownPayment = 'https://ufund.comseven.com/Runtime/Runtime/Form/QRDownPayment/?QRD_ID=';
+    private $billerId = '010555801180603';
+    private $ref3 = 'TFF';
 
-    private $API_Key = 'l7b894bab1b7a64de6bd1351d97efa6248';
-    private $API_Secret = 'c7df876bd66e449088aa52109186a063';
+    public static $API_Key;
+    public static $API_Secret;
 
+    public function __construct()
+    {
+        self::$API_Key = config('global_variable.SCB_API_Key');
+        self::$API_Secret = config('global_variable.SCB_API_Secret');
+        // self::$API_Key = env('SCB_API_Key');
+    }
+
+    public function Test()
+    {
+        return self::$API_Key;
+    }
 
     private function SCB_OauthToken()
     {
@@ -37,11 +52,11 @@ class API_SCB extends BaseController
                 'content-type' => 'application/json',
                 'requestUId' => $token_uuid,
                 // 'requestUId' => '85230887-e643-4fa4-84b2-4e56709c4ac4',
-                'resourceOwnerId' => $this->API_Key,
+                'resourceOwnerId' => self::$API_Key,
                 'accept-language' => 'EN',
-            ])->post('https://api-uat.partners.scb/partners/v1/oauth/token', [
-                "applicationKey" => $this->API_Key,
-                "applicationSecret" => $this->API_Secret,
+            ])->post('https://api.partners.scb/partners/v1/oauth/token', [
+                "applicationKey" => self::$API_Key,
+                "applicationSecret" => self::$API_Secret,
             ]);
 
             $oauthSCB = json_decode($response->body());
@@ -98,15 +113,15 @@ class API_SCB extends BaseController
                 'accept-language' => 'EN',
                 'authorization' => 'Bearer ' . $token->data->accessToken,
                 'requestUId' => $uuid,
-                'resourceOwnerId' => $this->API_Key
-            ])->post('https://api-uat.partners.scb/partners/v1/payment/qrcode/create', [
+                'resourceOwnerId' => self::$API_Key
+            ])->post('https://api.partners.scb/partners/v1/payment/qrcode/create', [
                 "qrType" => "PP",
                 "ppType" => "BILLERID",
-                "ppId" => "010555801180603",
+                "ppId" => $this->billerId,
                 "amount" => $DB_APPL_TRANS[0]->PREMIUM_AMT,
                 "ref1" => $DB_APPL_TRANS[0]->PAYMENT_REF1,
-                "ref2" => $ref2,
-                "ref3" => "TFF"
+                // "ref2" => $ref2,
+                "ref3" => $this->ref3
             ]);
 
             $res_data = json_decode($response->body());
@@ -116,25 +131,25 @@ class API_SCB extends BaseController
             }
             // return $res_data;
 
-            $DB_SEQ_ID = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')->insertGetId([
+            $DB_QRD_ID = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')->insertGetId([
                 // 'SEQ_ID' => $SEQ_ID,
                 'PAYMENT_REF1' => $DB_APPL_TRANS[0]->PAYMENT_REF1,
-                'PAYMENT_REF2' => $ref2,
+                // 'PAYMENT_REF2' => $ref2,
                 'CREATE_BY' => 'API',
                 'CREATE_DATE' => $dateNow,
                 'QR_PAY_DOWN' => '<file><name>QR_Down_' . $DB_APPL_TRANS[0]->PAYMENT_REF1 . '</name><content>' . $res_data->data->qrImage . '</content></file>',
                 'UUID' => $uuid,
             ]);
-            var_dump($uuid);
+            // var_dump($uuid);
             // dd($SEQ_ID);
-            dd($res_data);
+            // dd($res_data);
 
             $phone = '66' . mb_substr($DB_APPL_TRANS[0]->MOBILE_NO, 1);
             // $phone = '66804817163';
 
             $API_Service_SMS = new API_Service_SMS;
 
-            $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : https://43.254.133.148/Runtime/Runtime/Form/QRDownPayment/?SEQ_ID=" . $DB_SEQ_ID;
+            $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : " .$this->url_K2QRDownPayment . $DB_QRD_ID;
             $data_arry = array(
                 'user' => "ufund_official",
                 'password' => "ufund@2022",
@@ -170,7 +185,7 @@ class API_SCB extends BaseController
                     'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
                     'APP_ID' => $DB_CustomerData[0]->APP_ID,
                     'TRANSECTION_TYPE' => 'DownPayment',
-                    'TRANSECTION_ID' => 'SEQID_' . $DB_SEQ_ID,
+                    'TRANSECTION_ID' => 'QRDID_' . $DB_QRD_ID,
                     'SMS_RESPONSE_CODE' => $obj2->ErrorCode,
                     'SMS_RESPONSE_MESSAGE' => $obj2->ErrorMessage,
                     'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
@@ -220,7 +235,7 @@ class API_SCB extends BaseController
                     'QUOTATION_ID' => $DB_CustomerData[0]->QUOTATION_ID,
                     'APP_ID' => $DB_CustomerData[0]->APP_ID,
                     'TRANSECTION_TYPE' => 'DownPayment',
-                    'TRANSECTION_ID' => 'SEQID_' . $DB_SEQ_ID,
+                    'TRANSECTION_ID' => 'QRDID_' . $DB_QRD_ID,
                     'SMS_RESPONSE_CODE' => '0x00',
                     'SMS_RESPONSE_MESSAGE' => 'UFUND SYSTEM ERROR',
                     'SMS_RESPONSE_JOB_ID' => 'ERROR-' . $new_error_id,
@@ -318,7 +333,7 @@ class API_SCB extends BaseController
             return response()->json(array(
                 'resCode' => '01',
                 'resDesc' => 'failed',
-                'transactionId' => $data['transactionId'],
+                'transactionId' => isset($data['transactionId']) ? $data['transactionId'] : null,
                 // 'confirmId' => $data['confirmId'],
                 'Message' => $e->getMessage(),
             ));
@@ -351,9 +366,9 @@ class API_SCB extends BaseController
             $response = Http::withHeaders([
                 'accept-language' => 'EN',
                 'authorization' => 'Bearer ' . $token->data->accessToken,
-                'requestUId' => '19d27806-305a-4645-9746-537cf0f85865',
-                'resourceOwnerId' => $this->API_Key,
-            ])->get('https://api-uat.partners.scb/partners/v1/payment/billpayment/transactions/' . $data['transectionId'] . '?sendingBank=014');
+                'requestUId' => '74787ca2-a54b-4108-af0d-7a94dff1ab14',
+                'resourceOwnerId' => self::$API_Key,
+            ])->get('https://api.partners.scb/partners/v1/payment/billpayment/transactions/' . $data['transectionId'] . '?sendingBank=014');
 
             // dd($response->body());
             $res_data = json_decode($response->body());
@@ -387,8 +402,8 @@ class API_SCB extends BaseController
             // dd($token);
 
             $DB_TTP_QRDown = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_QR_DOWN')
-                ->select('SEQ_ID', 'PAYMENT_REF1', 'PAYMENT_REF2', 'UUID', 'CREATE_DATE')
-                ->where('SEQ_ID', $data['QRDown_SeqId'])
+                ->select('QRD_ID', 'PAYMENT_REF1', 'PAYMENT_REF2', 'UUID', 'CREATE_DATE')
+                ->where('QRD_ID', $data['QRDown_QrdId'])
                 ->get();
 
 
@@ -400,11 +415,11 @@ class API_SCB extends BaseController
             }
 
 
-            $billerId = '526446253766021';
+            
             // transactionDate={YYYY-MM-DD}
             $transactionDate = Carbon::parse($DB_TTP_QRDown[0]->CREATE_DATE)->format('Y-m-d');
             $ref1 = $DB_TTP_QRDown[0]->PAYMENT_REF1;
-            $ref2 = $DB_TTP_QRDown[0]->PAYMENT_REF2;
+            // $ref2 = $DB_TTP_QRDown[0]->PAYMENT_REF2;
             $UUID = $DB_TTP_QRDown[0]->UUID;
 
             $response = Http::withHeaders([
@@ -413,9 +428,9 @@ class API_SCB extends BaseController
                 'authorization' => 'Bearer ' . $token->data->accessToken,
                 // 'requestUId' => '871872a7-ed08-4229-a637-bb7c733305db',
                 'requestUId' => $UUID,
-                'resourceOwnerId' => $this->API_Key,
-            ])->get('https://api-uat.partners.scb//partners/v1/payment/billpayment/inquiry?eventCode=00300100&billerId='.$billerId.'&transactionDate='.$transactionDate.'&reference1='.$ref1.'&reference2='.$ref2);
-
+                'resourceOwnerId' => self::$API_Key,
+            ])->get('https://api.partners.scb/partners/v1/payment/billpayment/inquiry?eventCode=00300100&billerId='.$this->billerId.'&transactionDate='.$transactionDate.'&reference1='.$ref1);
+            // dd($response);
             // dd($response->body());
             $res_data = json_decode($response->body());
             return $res_data;
