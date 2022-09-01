@@ -50,7 +50,7 @@ class Job_QueueCheckSMSDeliver implements ShouldQueue
     public function CheckDeliver($SMS)
     {
 
-        $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user=ufund_official&password=ufund@2022&messageid=' . $SMS->SMS_RESPONSE_MSG_ID);
+        $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user='.ENV('MAILBIT_USER').'&password='.ENV('MAILBIT_PASS').'&messageid=' . $SMS->SMS_RESPONSE_MSG_ID);
 
         date_default_timezone_set('Asia/bangkok');
         $dateNow = date('Y-m-d');

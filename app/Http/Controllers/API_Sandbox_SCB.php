@@ -27,6 +27,17 @@ class API_Sandbox_SCB extends BaseController
     private $API_Secret = '4c726a6a58b14bd38f46d4aebab794d6';
 
 
+    public static $MAILBIT_USER;
+    public static $MAILBIT_PASS;
+    public static $MAILBIT_sid;
+
+    public function __construct()
+    {
+        self::$MAILBIT_USER = config('global_variable.MAILBIT_USER');
+        self::$MAILBIT_PASS = config('global_variable.MAILBIT_PASS');
+        self::$MAILBIT_sid = config('global_variable.MAILBIT_sid');
+    }
+
     public function SCB_OauthToken()
     {
         try {
@@ -140,10 +151,10 @@ class API_Sandbox_SCB extends BaseController
 
             $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : https://43.254.133.148/Runtime/Runtime/Form/QRDownPayment/?QRD_ID=" . $DB_QRD_ID;
             $data_arry = array(
-                'user' => "ufund_official",
-                'password' => "ufund@2022",
+                'user' => self::$MAILBIT_USER,
+                'password' => self::$MAILBIT_PASS,
                 'msisdn' => $phone,
-                'sid' => "UFUND TH",
+                'sid' => self::$MAILBIT_sid,
                 'msg' => $msg_send,
                 'fl' => "0",
                 'dc' => "8",

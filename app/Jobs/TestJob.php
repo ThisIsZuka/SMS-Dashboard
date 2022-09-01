@@ -46,26 +46,27 @@ class TestJob implements ShouldQueue
     {
 
         $data = $this->data;
+        // dd(ENV('MAILBIT_USER'));
+        dd('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user' . ENV('MAILBIT_USER') . '=&password=ufund@2022&messageid=');
+        // date_default_timezone_set('Asia/bangkok');
+        // $dateNow = date('Y-m-d');
 
-        date_default_timezone_set('Asia/bangkok');
-        $dateNow = date('Y-m-d');
+        // $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+        //     ->selectRaw('ISNULL(MAX(RUNNING_NO) + 99 ,1) as new_id')
+        //     ->where('date', $dateNow)
+        //     ->value('new_id');
 
-        $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-            ->selectRaw('ISNULL(MAX(RUNNING_NO) + 99 ,1) as new_id')
-            ->where('date', $dateNow)
-            ->value('new_id');
+        // self::$newData = 'test';
 
-        self::$newData = 'test';
-
-        DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
-            'DATE' => $dateNow,
-            // 'RUNNING_NO' => DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-            //     ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
-            //     ->where('date', $dateNow)
-            //     ->value('new_id'),
-            'RUNNING_NO' => 'sss',
-            'QUOTATION_ID' => $data,
-        ]);
+        // DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+        //     'DATE' => $dateNow,
+        //     // 'RUNNING_NO' => DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+        //     //     ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
+        //     //     ->where('date', $dateNow)
+        //     //     ->value('new_id'),
+        //     'RUNNING_NO' => 'sss',
+        //     'QUOTATION_ID' => $data,
+        // ]);
 
         sleep(1);
 

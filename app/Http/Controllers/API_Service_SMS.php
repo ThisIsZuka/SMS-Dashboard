@@ -28,13 +28,25 @@ use App\Jobs\Job_QueueSMS;
 class API_Service_SMS extends BaseController
 {
 
+    public static $MAILBIT_USER;
+    public static $MAILBIT_PASS;
+    public static $MAILBIT_sid;
+
+    public function __construct()
+    {
+        self::$MAILBIT_USER = config('global_variable.MAILBIT_USER');
+        self::$MAILBIT_PASS = config('global_variable.MAILBIT_PASS');
+        self::$MAILBIT_sid = config('global_variable.MAILBIT_sid');
+    }
+
     public function SMS_Check_Credit()
     {
         $data = array(
-            'user' => "ufund_official",
-            'password' => "ufund@2022",
-            'sid' => "UFUND TH",
+            'user' => self::$MAILBIT_USER,
+            'password' => self::$MAILBIT_PASS,
+            'sid' => self::$MAILBIT_sid,
         );
+        // dd($data);
         list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/CheckBalance.aspx", 'www.comseven.com', $data);
         return $content;
     }
@@ -114,11 +126,12 @@ class API_Service_SMS extends BaseController
                     $textDate = $split_str[2] . " " . $strMonthThai . " " . $year;
                     // dd($textDate);
                     // printf();
+
                     $data_arry = array(
-                        'user' => "ufund_official",
-                        'password' => "ufund@2022",
+                        'user' => self::$MAILBIT_USER,
+                        'password' => self::$MAILBIT_PASS,
                         'msisdn' => $phone,
-                        'sid' => "UFUND TH",
+                        'sid' => self::$MAILBIT_sid,
                         // 'msg' => "UFUND จัดส่งใบแจ้งหนี้ สามารถชำระด้วย QR code บน Mobile Banking และไม่ต้องนำหลักฐานการโอนแจ้งกลับ กรุณารอใบเสร็จในระบบภายใน 7 วันทำการ คลิ๊ก https://ufund.comseven.com/Runtime/Runtime/Form/INVView/?INVOICE_ID=" . $list_sendSMS[$i]->INVOICE_ID,
                         // 'msg' => "UFUND ส่งบิล รอบกำหนดชำระ ".$textDate." กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก https://ufund.comseven.com/Runtime/Runtime/Form/INVView/?INVOICE_ID=" . $list_sendSMS[$i]->INVOICE_ID . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
                         'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $list_sendSMS[$i]->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
@@ -304,10 +317,10 @@ class API_Service_SMS extends BaseController
                     }
 
                     $data_arry = array(
-                        'user' => "ufund_official",
-                        'password' => "ufund@2022",
+                        'user' => self::$MAILBIT_USER,
+                        'password' => self::$MAILBIT_PASS,
                         'msisdn' => $phone,
-                        'sid' => "UFUND TH",
+                        'sid' => self::$MAILBIT_sid,
                         // 'msg' => "UFUND จัดส่งใบแจ้งหนี้ สามารถชำระด้วย QR code บน Mobile Banking และไม่ต้องนำหลักฐานการโอนแจ้งกลับ กรุณารอใบเสร็จในระบบภายใน 7 วันทำการ คลิ๊ก https://ufund.comseven.com/Runtime/Runtime/Form/INVView/?INVOICE_ID=" . $list_sendSMS[$i]->INVOICE_ID,
                         'msg' => $list_sendSMS[$i]->sms,
                         'fl' => "0",
@@ -439,10 +452,10 @@ class API_Service_SMS extends BaseController
         try {
 
             $data_arry = array(
-                'user' => "ufund_official",
-                'password' => "ufund@2022",
+                'user' => self::$MAILBIT_USER,
+                'password' => self::$MAILBIT_PASS,
                 'msisdn' => $phone,
-                'sid' => "UFUND TH",
+                'sid' => self::$MAILBIT_sid,
                 // 'msg' => "UFUND จัดส่งใบแจ้งหนี้ สามารถชำระด้วย QR code บน Mobile Banking และไม่ต้องนำหลักฐานการโอนแจ้งกลับ กรุณารอใบเสร็จในระบบภายใน 7 วันทำการ คลิ๊ก https://ufund.comseven.com/Runtime/Runtime/Form/INVView/?INVOICE_ID=" . $list_sendSMS[$i]->INVOICE_ID,
                 // 'msg' =>  $object_type->NOTPASS,
                 'msg' => $object_type->$type,
@@ -511,10 +524,10 @@ class API_Service_SMS extends BaseController
 
 
             $data_arry = array(
-                'user' => "ufund_official",
-                'password' => "ufund@2022",
+                'user' => self::$MAILBIT_USER,
+                'password' => self::$MAILBIT_PASS,
                 'msisdn' => $phone,
-                'sid' => "UFUND TH",
+                'sid' => self::$MAILBIT_sid,
                 'msg' => $message_sms_app,
                 'fl' => "0",
                 'dc' => "8",
@@ -643,8 +656,8 @@ class API_Service_SMS extends BaseController
 
             $data = $request->all();
 
-            $user = 'ufund_official';
-            $password = 'ufund@2022';
+            $user = self::$MAILBIT_USER;
+            $password = self::$MAILBIT_PASS;
 
             $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user=' . $user . '&password=' . $password . '&messageid=' . $data['msgId']);
 
@@ -663,10 +676,10 @@ class API_Service_SMS extends BaseController
     {
 
         $data_arry = array(
-            'user' => "ufund_official",
-            'password' => "ufund@2022",
+            'user' => self::$MAILBIT_USER,
+            'password' => self::$MAILBIT_PASS,
             'msisdn' => '66804817163',
-            'sid' => "UFUND TH",
+            'sid' => self::$MAILBIT_sid,
             'msg' => "ทดสอบ SMS Check Deliver",
             'fl' => "0",
             'dc' => "8",
