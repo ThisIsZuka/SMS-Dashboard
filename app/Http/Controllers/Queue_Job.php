@@ -24,8 +24,8 @@ class Queue_Job extends BaseController
 
     public function __construct()
     {
-        $this->API_Key =config('global_variable.SCB_API_Key');
-        // self::$API_Key = env('SCB_API_Key');
+        // $this->API_Key =config('global_variable.SCB_API_Key');
+        self::$API_Key = config('global_variable.SCB_API_Key');
     }
 
     public function GetQueue()
@@ -50,7 +50,6 @@ class Queue_Job extends BaseController
 
     public function TestScheduling()
     {
-        // $response = Http::get('http://sms.mailbit.co.th/vendorsms/checkdelivery.aspx?user=ufund_official&password=ufund@2022&messageid=66959485218-7cc63b3e18c44df59bb3ab2665a7f601');
 
         // return $response;
 
@@ -72,7 +71,7 @@ class Queue_Job extends BaseController
         try {
 
             // return self::$API_Key;
-            $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '01-01-2022' "));
+            // $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '01-01-2022' "));
             // dd($list_sendSMS[10]->QUOTATION_ID);
             // count($list_sendSMS);
             for ($x = 0; $x < 1; $x++) {

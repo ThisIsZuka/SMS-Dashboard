@@ -30,11 +30,17 @@ class API_SCB extends BaseController
 
     public static $API_Key;
     public static $API_Secret;
+    public static $MAILBIT_USER;
+    public static $MAILBIT_PASS;
+    public static $MAILBIT_sid;
 
     public function __construct()
     {
         self::$API_Key = config('global_variable.SCB_API_Key');
         self::$API_Secret = config('global_variable.SCB_API_Secret');
+        self::$MAILBIT_USER = config('global_variable.MAILBIT_USER');
+        self::$MAILBIT_PASS = config('global_variable.MAILBIT_PASS');
+        self::$MAILBIT_sid = config('global_variable.MAILBIT_sid');
         // self::$API_Key = env('SCB_API_Key');
     }
 
@@ -151,10 +157,10 @@ class API_SCB extends BaseController
 
             $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : " .$this->url_K2QRDownPayment . $DB_QRD_ID;
             $data_arry = array(
-                'user' => "ufund_official",
-                'password' => "ufund@2022",
+                'user' => self::$MAILBIT_USER,
+                'password' => self::$MAILBIT_PASS,
                 'msisdn' => $phone,
-                'sid' => "UFUND TH",
+                'sid' => self::$MAILBIT_sid,
                 'msg' => $msg_send,
                 'fl' => "0",
                 'dc' => "8",

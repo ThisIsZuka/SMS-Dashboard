@@ -118,10 +118,10 @@ class Job_QueueSMS implements ShouldQueue
         // dd($textDate);
         // printf();
         $data_arry = array(
-            'user' => "ufund_official",
-            'password' => "ufund@2022",
+            'user' => ENV('MAILBIT_USER'),
+            'password' => ENV('MAILBIT_PASS'),
             'msisdn' => $phone,
-            'sid' => "UFUND TH",
+            'sid' => ENV('MAILBIT_sid'),
             'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
             'fl' => "0",
             'dc' => "8",
