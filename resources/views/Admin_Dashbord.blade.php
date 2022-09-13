@@ -471,12 +471,13 @@
                     method: 'GET',
                     url: 'SMS_Check_Credit',
                 }).then(function(response) {
-                    // console.log(response.data.split('#'));
-                    respon = response.data.split('#');
-                    if (respon[0] == 'Success') {
-                        respon = response.data.split(':');
-                        txt_sms_credit = '<i class="ti-arrow-up text-success"></i>' + parseFloat(respon[
-                            respon.length - 1]).toFixed(2)
+                    console.log(response.data);
+                    // respon = response.data.split('#');
+                    respon = response.data
+                    if (respon.ErrorDescription == 'Success') {
+                        // respon = response.data.split(':');
+                        Credits = respon.Data[0].Credits.split('SMS')[1]
+                        txt_sms_credit = '<i class="ti-arrow-up text-success"></i>' + parseFloat(Credits).toFixed(2)
                         $('#txt_sms_credit').html(txt_sms_credit);
                     } else {
                         // Snackbar.show({

@@ -44,7 +44,7 @@ Route::group(['middleware' => ['JWT_Token']], function () {
 
 
     // Garantor
-    Route::get('/send_SMS_Garantor', [API_Service_SMS::class, 'submit_send_SMS_Garantor']);
+    // Route::get('/send_SMS_Garantor', [API_Service_SMS::class, 'submit_send_SMS_Garantor']);
 
 
     // Welcome Call

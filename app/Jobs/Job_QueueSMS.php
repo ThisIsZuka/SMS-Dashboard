@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Http;
 use App\Jobs\Job_QueueInsertSMS;
 
 class Job_QueueSMS implements ShouldQueue
@@ -32,6 +33,7 @@ class Job_QueueSMS implements ShouldQueue
     public static $obj2;
     public static $phone;
 
+    
     public function __construct($customer)
     {
         $this->customer = $customer;
@@ -50,47 +52,14 @@ class Job_QueueSMS implements ShouldQueue
     }
 
 
-    public function PostRequest_SMS($url, $referer, $_data)
+    public function PostRequest_SMS($url, $_data)
     {
-        // // convert variables array to string:
-        $data = array();
-        foreach ($_data as $key => $value) {
-            // echo $key;
-            $data[] = "$key=$value";
-        }
-        $data = implode('&', $data);
-        // format --> test1=a&test2=b etc.
-        // parse the given URL
-        $url = parse_url($url);
-        if ($url['scheme'] != 'http') {
-            die('Only HTTP request are supported !');
-        }
-        // extract host and path:
-        $host = $url['host'];
-        $path = $url['path'];
-        // open a socket connection on port 80
-        $fp = fsockopen($host, 80);
-        // send the request headers:
-        fputs($fp, "POST $path HTTP/1.1\r\n");
-        fputs($fp, "Host: $host\r\n");
-        fputs($fp, "Referer: $referer\r\n");
-        fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
-        fputs($fp, "Content-length: " . strlen($data) . "\r\n");
-        fputs($fp, "Connection: close\r\n\r\n");
-        fputs($fp, $data);
-        $result = '';
-        while (!feof($fp)) {
-            // receive the results of the request
-            $result .= fgets($fp, 128);
-        }
-        // close the socket connection:
-        fclose($fp);
-        // split the result header from the content
-        $result = explode("\r\n\r\n", $result, 2);
-        $header = isset($result[0]) ? $result[0] : '';
-        $content = isset($result[1]) ? $result[1] : '';
-        // return as array:
-        return array($header, $content);
+        $response = Http::withHeaders([
+            'content-type' => 'application/json',
+        ])->post($url, $_data);
+        $resData =  $response->body();
+
+        return array($resData, $_data['message']);
     }
 
 
@@ -117,21 +86,31 @@ class Job_QueueSMS implements ShouldQueue
         $textDate = $split_str[2] . " " . $strMonthThai . " " . $year;
         // dd($textDate);
         // printf();
+        // $data_arry = array(
+        //     'user' => ENV('MAILBIT_USER'),
+        //     'password' => ENV('MAILBIT_PASS'),
+        //     'msisdn' => $phone,
+        //     'sid' => ENV('MAILBIT_sid'),
+        //     'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
+        //     'fl' => "0",
+        //     'dc' => "8",
+        // );
+
         $data_arry = array(
-            'user' => ENV('MAILBIT_USER'),
-            'password' => ENV('MAILBIT_PASS'),
-            'msisdn' => $phone,
-            'sid' => ENV('MAILBIT_sid'),
-            'msg' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
-            'fl' => "0",
-            'dc' => "8",
+            'apiKey' => ENV('MAILBIT_APIKey'),
+            'clientId' => ENV('MAILBIT_ClientID'),
+            'mobileNumbers' => $phone,
+            'SenderId' => ENV('MAILBIT_SenderId'),
+            'message' => "UFUND ส่งบิล รอบกำหนดชำระ " . $textDate . " กรุณาชำระ ภายใน 22:00น. เพื่อหลีกเลี่ยงค่าปรับ คลิ๊ก " . $cus_data->SHT_INV_URL . " เพื่อดูรายละเอียดบิล หากชำระแล้วใบเสร็จจะออกให้ภายใน 7-10 วันทำการ",
+            'is_Unicode' => true,
+            'is_Flash' => false,
         );
 
-        list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+        list($content, $txt_message) = $this->PostRequest_SMS("https://api.send-sms.in.th/api/v2/SendSMS", $data_arry);
 
         $obj2 = json_decode($content);
         self::$obj2 = $obj2;
-        Job_QueueInsertSMS::dispatch($obj2, $cus_data, $phone)->onQueue('site_sms_insert');
+        Job_QueueInsertSMS::dispatch($obj2, $cus_data, $phone, $txt_message)->onQueue('site_sms_insert');
     }
 
 

@@ -30,17 +30,24 @@ class API_SCB extends BaseController
 
     public static $API_Key;
     public static $API_Secret;
-    public static $MAILBIT_USER;
-    public static $MAILBIT_PASS;
-    public static $MAILBIT_sid;
+    // public static $MAILBIT_USER;
+    // public static $MAILBIT_PASS;
+    // public static $MAILBIT_sid;
+
+    public static $MAILBIT_APIKey;
+    public static $MAILBIT_ClientID;
+    public static $MAILBIT_SenderId;
 
     public function __construct()
     {
         self::$API_Key = config('global_variable.SCB_API_Key');
         self::$API_Secret = config('global_variable.SCB_API_Secret');
-        self::$MAILBIT_USER = config('global_variable.MAILBIT_USER');
-        self::$MAILBIT_PASS = config('global_variable.MAILBIT_PASS');
-        self::$MAILBIT_sid = config('global_variable.MAILBIT_sid');
+        // self::$MAILBIT_USER = config('global_variable.MAILBIT_USER');
+        // self::$MAILBIT_PASS = config('global_variable.MAILBIT_PASS');
+        // self::$MAILBIT_sid = config('global_variable.MAILBIT_sid');
+        self::$MAILBIT_APIKey = config('global_variable.MAILBIT_APIKey');
+        self::$MAILBIT_ClientID = config('global_variable.MAILBIT_ClientID');
+        self::$MAILBIT_SenderId = config('global_variable.MAILBIT_SenderId');
         // self::$API_Key = env('SCB_API_Key');
     }
 
@@ -69,7 +76,6 @@ class API_SCB extends BaseController
             // dd($oauth->status->code);
 
             return $oauthSCB;
-
         } catch (ConnectionException $e) {
             return $e;
         }
@@ -131,7 +137,7 @@ class API_SCB extends BaseController
             ]);
 
             $res_data = json_decode($response->body());
-            
+
             if ($res_data->status->code != '1000') {
                 throw new Exception($res_data->status->description);
             }
@@ -155,19 +161,28 @@ class API_SCB extends BaseController
 
             $API_Service_SMS = new API_Service_SMS;
 
-            $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : " .$this->url_K2QRDownPayment . $DB_QRD_ID;
+            $msg_send = "กรุณาชำระเงินดาวน์ จำนวน " . $DB_APPL_TRANS[0]->PREMIUM_AMT . " บาท ผ่าน QR code บน Mobile Banking App ดาวน์โหลดที่ : " . $this->url_K2QRDownPayment . $DB_QRD_ID;
+
             $data_arry = array(
-                'user' => self::$MAILBIT_USER,
-                'password' => self::$MAILBIT_PASS,
-                'msisdn' => $phone,
-                'sid' => self::$MAILBIT_sid,
-                'msg' => $msg_send,
-                'fl' => "0",
-                'dc' => "8",
+                'apiKey' => self::$MAILBIT_APIKey,
+                'clientId' => self::$MAILBIT_ClientID,
+                'mobileNumbers' => $phone,
+                'SenderId' => self::$MAILBIT_SenderId,
+                'message' => $msg_send,
+                'is_Unicode' => true,
+                'is_Flash' => false,
             );
 
-            list($header, $content) = $API_Service_SMS->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+            list($content, $txt_message) = $API_Service_SMS->PostRequest_SMS("https://api.send-sms.in.th/api/v2/SendSMS", $data_arry);
             $obj2 = json_decode($content);
+
+            $MSG_ID = null;
+            $SumCredit = null;
+            if (!is_null($obj2->Data)) {
+                $MSG_ID = $obj2->Data[0]->MessageId;
+                $SumCredit = count($obj2->Data);
+            }
+
             // dd($obj2);
             $datestamp = date('Y-m-d');
             $timestamp = date('H:i:s');
@@ -192,29 +207,17 @@ class API_SCB extends BaseController
                     'APP_ID' => $DB_CustomerData[0]->APP_ID,
                     'TRANSECTION_TYPE' => 'DownPayment',
                     'TRANSECTION_ID' => 'QRDID_' . $DB_QRD_ID,
-                    'SMS_RESPONSE_CODE' => $obj2->ErrorCode,
-                    'SMS_RESPONSE_MESSAGE' => $obj2->ErrorMessage,
-                    'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
+                    'SMS_RESPONSE_CODE' => $obj2->ErrorCode == 0 ? '000' : $obj2->ErrorCode,
+                    'SMS_RESPONSE_MESSAGE' => $obj2->ErrorCode == 0 ? 'Success' : $obj2->ErrorDescription,
+                    // 'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
                     'SEND_DATE' => $datestamp,
                     'SEND_TIME' => $timestamp,
                     'SEND_Phone' => $phone,
                     'CONTRACT_ID' => $DB_CustomerData[0]->CONTRACT_ID,
+                    'SMS_RESPONSE_MSG_ID' => $MSG_ID,
+                    'SMS_TEXT_MESSAGE' => $data_arry['message'],
+                    'SMS_CREDIT_USED' => $SumCredit,
                 ]);
-
-                if ($obj2->MessageData) {
-                    $txt_message = '';
-                    $msg = $obj2->MessageData[0]->MessageParts;
-                    for ($x = 0; $x < count($msg); $x++) {
-                        $txt_message .=  $msg[$x]->Text;
-                    }
-                    DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                        ->where('SMS_RESPONSE_JOB_ID',  $obj2->JobId)
-                        ->update([
-                            'SMS_RESPONSE_MSG_ID' => $msg[0]->MsgId,
-                            'SMS_TEXT_MESSAGE' => $txt_message,
-                            'SMS_CREDIT_USED' => count($msg),
-                        ]);
-                }
 
 
                 DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_SMS_RESULT')->insert([
@@ -229,7 +232,6 @@ class API_SCB extends BaseController
                     'SEND_RESULT' => 'd5906a26da074ce79a1118c3259a861e',
                     'SEND_MSG' => $msg_send,
                 ]);
-
             } catch (\Exception $e) {
                 $datestamp = date('Y-m-d');
                 $timestamp = date('H:i:s');
@@ -379,7 +381,6 @@ class API_SCB extends BaseController
             // dd($response->body());
             $res_data = json_decode($response->body());
             return $res_data;
-            
         } catch (Exception $e) {
             // return $e->getMessage();
             return response()->json(array(
@@ -421,7 +422,7 @@ class API_SCB extends BaseController
             }
 
 
-            
+
             // transactionDate={YYYY-MM-DD}
             $transactionDate = Carbon::parse($DB_TTP_QRDown[0]->CREATE_DATE)->format('Y-m-d');
             $ref1 = $DB_TTP_QRDown[0]->PAYMENT_REF1;
@@ -435,7 +436,7 @@ class API_SCB extends BaseController
                 // 'requestUId' => '871872a7-ed08-4229-a637-bb7c733305db',
                 'requestUId' => $UUID,
                 'resourceOwnerId' => self::$API_Key,
-            ])->get('https://api.partners.scb/partners/v1/payment/billpayment/inquiry?eventCode=00300100&billerId='.$this->billerId.'&transactionDate='.$transactionDate.'&reference1='.$ref1);
+            ])->get('https://api.partners.scb/partners/v1/payment/billpayment/inquiry?eventCode=00300100&billerId=' . $this->billerId . '&transactionDate=' . $transactionDate . '&reference1=' . $ref1);
             // dd($response);
             // dd($response->body());
             $res_data = json_decode($response->body());

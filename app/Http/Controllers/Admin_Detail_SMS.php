@@ -29,27 +29,31 @@ class Admin_Detail_SMS extends BaseController
             $return_data = new \stdClass();
 
             $DB_DATA = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE','SMS_CREDIT_USED', 'SMS_Status_Delivery')
+                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE', 'SMS_CREDIT_USED', 'SMS_Status_Delivery')
                 // ->get();
                 ->where(function ($query) use ($data) {
                     if ($data['date_first'] != null) {
                         if ($data['date_last'] != null) {
-                            $query->where('DATE', '>=', $data['date_first']);
-                            $query->where('DATE', '<=', $data['date_last']);
+                            $query->where(function ($subquery) use ($data) {
+                                $subquery->where('DATE', '>=', $data['date_first']);
+                                $subquery->where('DATE', '<=', $data['date_last']);
+                            });
                         } else {
                             $query->where('DATE', $data['date_first']);
                         }
                     }
 
-                    if ($data['type'] != null && $data['type'] !='Other') {
+                    if ($data['type'] != null && $data['type'] != 'Other') {
                         $query->where('TRANSECTION_TYPE', $data['type']);
 
                         if ($data['type_search'] != null) {
                             $query->where('TRANSECTION_ID', $data['type_search']);
                         }
-                    }else if($data['type'] =='Other'){
-                        $query->whereNotIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT', 'TAX']);
-                        $query->orwhereNull('TRANSECTION_TYPE');
+                    } else if ($data['type'] == 'Other') {
+                        $query->where(function ($subquery) use ($data) {
+                            $subquery->whereNotIn('TRANSECTION_TYPE', ['INVOICE', 'RECEIPT', 'TAX']);
+                            $subquery->orwhereNull('TRANSECTION_TYPE');
+                        });
                     }
 
                     if ($data['status'] != null) {
@@ -68,9 +72,9 @@ class Admin_Detail_SMS extends BaseController
                     if ($data['quick_select'] != null) {
                         if ($data['quick_text'] != null) {
                             $quick_text = $data['quick_text'];
-                            if($data['quick_select'] == 'SEND_PHONE'){
-                                $phone_spec = str_replace(' ','',$data['quick_text']);
-                                $phone_subsrt = str_replace('-','',$phone_spec);
+                            if ($data['quick_select'] == 'SEND_PHONE') {
+                                $phone_spec = str_replace(' ', '', $data['quick_text']);
+                                $phone_subsrt = str_replace('-', '', $phone_spec);
                                 $quick_text =  '66' . mb_substr($phone_subsrt, 1);
                                 // dd($quick_text);
                             }
@@ -114,7 +118,7 @@ class Admin_Detail_SMS extends BaseController
             $return_data = new \stdClass();
 
             $DB_DATA = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
-                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE','SMS_CREDIT_USED', 'SMS_Status_Delivery')
+                ->select('SMS_ID', 'DATE', 'RUNNING_NO', 'QUOTATION_ID', 'APP_ID', 'TRANSECTION_TYPE', 'TRANSECTION_ID', 'SMS_RESPONSE_CODE', 'SMS_RESPONSE_MESSAGE', 'SMS_RESPONSE_JOB_ID', 'SEND_DATE', 'SEND_TIME', 'SEND_Phone', 'CONTRACT_ID', 'DUE_DATE', 'SMS_TEXT_MESSAGE', 'SMS_CREDIT_USED', 'SMS_Status_Delivery')
                 // ->where('TRANSECTION_TYPE', $data['transection_type'])
                 // ->where('TRANSECTION_ID', $data['transection_id'])
                 ->where('SMS_ID', $data['sms_id'])
@@ -128,7 +132,6 @@ class Admin_Detail_SMS extends BaseController
             $return_data->message = 'Sucsess';
 
             return $return_data;
-
         } catch (Exception $e) {
 
             $return_data = new \stdClass();
