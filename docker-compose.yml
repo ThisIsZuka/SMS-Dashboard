@@ -1,0 +1,25 @@
+version: '3.1'
+services:
+
+  php_laravel:
+    image: namoshek/php-mssql:8.1-fpm-alpine
+    container_name: php_service_fpm
+    restart: always
+    volumes:
+      - .:/var/www/html/app
+    ports:
+      - 1433:1433
+    expose:
+      - "9000"
+
+  nginx_core:
+    image: nginx:stable-alpine
+    container_name: nginx_core
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    volumes_from:
+      - php_laravel
