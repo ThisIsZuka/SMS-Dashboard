@@ -18,8 +18,6 @@ use App\Http\Controllers\API_SCB;
 use App\Http\Controllers\API_Sandbox_SCB;
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -157,4 +155,4 @@ Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_
 // Route::get('/SCB_OauthToken', [API_Sandbox_SCB::class, 'SCB_OauthToken']);
 
 
-Route::get('/test_new', [API_Service_SMS::class, 'test_new']);
+Route::get('/test_new', [API_Service_SMS::class, 'TestSending']);

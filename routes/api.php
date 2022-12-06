@@ -9,6 +9,8 @@ use App\Http\Controllers\Login_Auth_Controller;
 use App\Http\Controllers\API_SCB;
 use App\Http\Controllers\API_Sandbox_SCB;
 
+use App\Http\Controllers\API_SCB_Bill_H2H;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -56,3 +58,7 @@ Route::group(['middleware' => ['JWT_Token']], function () {
 // API SCB
 // Route::post('/Payment_Confirm', [API_Sandbox_SCB::class, 'SCB_Callback_Payment_Confirm']);
 Route::post('/Payment_Confirm', [API_SCB::class, 'SCB_Callback_Payment_Confirm']);
+
+
+// Bill Payment
+Route::post('/SCBbillPayment', [API_SCB_Bill_H2H::class, 'SCB_Routing']);

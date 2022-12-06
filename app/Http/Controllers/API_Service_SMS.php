@@ -216,14 +216,14 @@ class API_Service_SMS extends BaseController
 
             $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '" . $inv_date . "' "));
 
-            // for ($i = 0; $i < count($list_sendSMS); $i++) {
-            for ($i = 0; $i < 1; $i++) {
+            for ($i = 0; $i < count($list_sendSMS); $i++) {
 
                 Job_QueueSMS::dispatch($list_sendSMS[$i])->onQueue('site_main');
             }
 
             $return_data->Code = '999999';
             $return_data->Status = 'SMS Processing';
+            $return_data->SMS = count($list_sendSMS);
             return $return_data;
         } catch (Exception $e) {
             $return_data = new \stdClass();
@@ -677,25 +677,91 @@ class API_Service_SMS extends BaseController
 
     public function TestSending()
     {
+        date_default_timezone_set('Asia/bangkok');
+        $dateNow = date('Y-m-d');
 
-        $data_arry = array(
-            'user' => self::$MAILBIT_USER,
-            'password' => self::$MAILBIT_PASS,
-            'msisdn' => '66804817163',
-            'sid' => self::$MAILBIT_sid,
-            'msg' => "ทดสอบ SMS Check Deliver",
-            'fl' => "0",
-            'dc' => "8",
-        );
+        $datestamp = date('Y-m-d');
+        $timestamp = date('H:i:s');
 
-        // echo '<pre>';
-        // print_r($data_arry);
-        // echo '</pre>';
-        list($header, $content) = $this->PostRequest_SMS("http://sms.mailbit.co.th/vendorsms/pushsms.aspx", 'www.comseven.com', $data_arry);
+        $phone = '66' . mb_substr('0804817163', 1);
 
-        $obj2 = json_decode($content);
+        $return_data = new \stdClass();
 
-        return $obj2;
+        // dd($object_type->$type);
+
+        $new_id = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
+            ->selectRaw('ISNULL(MAX(RUNNING_NO) + 1 ,1) as new_id')
+            ->where('date', $dateNow)
+            ->get();
+
+        try {
+
+            $data_arry = array(
+                'apiKey' => self::$MAILBIT_APIKey,
+                'clientId' => self::$MAILBIT_ClientID,
+                'mobileNumbers' => $phone,
+                'SenderId' => self::$MAILBIT_SenderId,
+                'message' => 'Test New sending ทดสอบ',
+                'is_Unicode' => true,
+                'is_Flash' => false,
+            );
+
+            // dd($data_arry['msg']);
+            list($content, $txt_message) = $this->PostRequest_SMS("https://api.send-sms.in.th/api/v2/SendSMS", $data_arry);
+
+            $obj2 = json_decode($content);
+
+            $MSG_ID = null;
+            $SumCredit = null;
+            if (!is_null($obj2->Data)) {
+                $MSG_ID = $obj2->Data[0]->MessageId;
+                $SumCredit = count($obj2->Data);
+            }
+
+
+            DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+                'DATE' => $dateNow,
+                'RUNNING_NO' => $new_id[0]->new_id,
+                'TRANSECTION_TYPE' => 'Garantor',
+                'SMS_RESPONSE_CODE' => $obj2->ErrorCode == 0 ? '000' : $obj2->ErrorCode,
+                'SMS_RESPONSE_MESSAGE' => $obj2->ErrorCode == 0 ? 'Success' : $obj2->ErrorDescription,
+                // 'SMS_RESPONSE_JOB_ID' => $obj2->JobId,
+                'SEND_DATE' => $datestamp,
+                'SEND_TIME' => $timestamp,
+                'SEND_Phone' => $phone,
+                'SMS_RESPONSE_MSG_ID' => $MSG_ID,
+                'SMS_TEXT_MESSAGE' => $data_arry['message'],
+                'SMS_CREDIT_USED' => $SumCredit,
+            ]);
+            // dd($obj2);
+
+            return response()->json(array(
+                'Code' => '9999',
+                'status' => 'Success',
+            ));
+            
+        } catch (Exception $e) {
+
+            $new_error_id = date("Ymdhis");
+
+            DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')->insert([
+                'DATE' => $dateNow,
+                'RUNNING_NO' => $new_id[0]->new_id,
+                'TRANSECTION_TYPE' => 'Garantor',
+                'SMS_RESPONSE_CODE' => '0x00',
+                'SMS_RESPONSE_MESSAGE' => 'UFUND SYSTEM ERROR',
+                'SMS_RESPONSE_JOB_ID' => 'ERROR-' . $new_error_id,
+                'SEND_DATE' => $datestamp,
+                'SEND_TIME' => $timestamp,
+                'SEND_Phone' => $phone,
+                'SMS_TEXT_MESSAGE' => $e->getMessage(),
+            ]);
+
+            $return_data->Code = '000000';
+            $return_data->Status =  $e->getMessage();
+
+            return $return_data;
+        }
     }
 
     public function test_new()

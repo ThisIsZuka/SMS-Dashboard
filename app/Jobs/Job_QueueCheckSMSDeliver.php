@@ -40,6 +40,7 @@ class Job_QueueCheckSMSDeliver implements ShouldQueue
      *
      * @return void
      */
+    
     public function handle()
     {
         $SMS = $this->SMSData;

@@ -465,6 +465,10 @@
         chart();
         // setInterval(SMS_Check_Credit, 2000);
 
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function SMS_Check_Credit(iurl, id, type, number) {
             $(".background_loading").css("display", "block");
             axios({
@@ -477,8 +481,9 @@
                     if (respon.ErrorDescription == 'Success') {
                         // respon = response.data.split(':');
                         Credits = respon.Data[0].Credits.split('SMS')[1]
-                        txt_sms_credit = '<i class="ti-arrow-up text-success"></i>' + parseFloat(Credits).toFixed(2)
-                        $('#txt_sms_credit').html(txt_sms_credit);
+                        txt_sms_credit = '<i class="ti-arrow-up text-success"></i>' + parseFloat(Credits)
+                            .toFixed(2)
+                        $('#txt_sms_credit').html(numberWithCommas(txt_sms_credit));
                     } else {
                         // Snackbar.show({
                         //     actionText: 'close',
@@ -529,13 +534,10 @@
                     // console.log(response.data);
                     // respon = response.data.split('#');
                     if (response.data.code == "999999") {
-                        txt_sms_sender = '<i class="ti-arrow-down text-danger"></i>' + response.data.data
-                            .sms_credit;
+                        txt_sms_sender = '<i class="ti-arrow-down text-danger"></i>' + numberWithCommas(response.data.data.sms_credit);
                         $('#txt_sms_sender').html(txt_sms_sender);
-                        txt_sms_sum_sender = '<i class="ti-location-arrow text-info ml-1"></i>' + response
-                            .data
-                            .data.sms_sum;
-                        $('#txt_sms_sum_sender').html(txt_sms_sum_sender);
+                        txt_sms_sum_sender = '<i class="ti-location-arrow text-info ml-1"></i>' + response.data.data.sms_sum;
+                        $('#txt_sms_sum_sender').html(numberWithCommas(txt_sms_sum_sender));
                     } else {
                         $('#text_alert').css('color', 'red')
                         $('#text_alert').text('ไม่สามารถเชื่อมต่อกับระบบได้')
@@ -618,7 +620,7 @@
                             '<td class="align-middle">' +
                             '<h6>' + items[i].txt_name + '</h6>' +
                             '</td>' +
-                            '<td class="align-middle">' + items[i].sum + '</td>' +
+                            '<td class="align-middle">' + numberWithCommas(items[i].sum) + '</td>' +
                             '</tr>';
                     }
                     $('#list_count_sms_type').html(html);
@@ -691,7 +693,8 @@
                         type: 'pie',
                         data: {
                             labels: ["Success#Deliver", "Success#Undeliver",
-                                "Success#StatusUnknown", "Success#WaitCheckDeliver", "SystemError", "Invalid mobile numbers"
+                                "Success#StatusUnknown", "Success#WaitCheckDeliver",
+                                "SystemError", "Invalid mobile numbers"
                             ],
                             datasets: [{
                                 data: [
@@ -705,7 +708,7 @@
                                 backgroundColor: [
                                     "rgba(85, 206, 99, 1)",
                                     "rgba(77, 159, 226, 1)",
-                                    "rgba(240, 197, 92, 1)", 
+                                    "rgba(240, 197, 92, 1)",
                                     "rgba(229, 250, 4, 0.8)",
                                     "rgba(255, 0, 0, 0.8)",
                                     "rgba(139, 130, 130, 1)"

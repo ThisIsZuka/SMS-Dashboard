@@ -82,6 +82,14 @@ class Admin_Detail_SMS extends BaseController
                             $query->where($data['quick_select'], $quick_text);
                         }
                     }
+
+                    if($data['StatusSender'] != null) {
+                        if ($data['StatusSender'] == 'DELIVRD') {
+                            $query->whereIn('SMS_Status_Delivery', ['DELIVRD', 'SUBMITTED']);
+                        } else {
+                            $query->whereNotIn('SMS_Status_Delivery', ['DELIVRD', 'SUBMITTED']);
+                        }
+                    }
                 })
                 // ->distinct('TRANSECTION_ID')
                 ->orderBy('SMS_ID', 'ASC')

@@ -153,19 +153,25 @@ class Admin_Dashbord extends BaseController
             $SuccessDeliver = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
                 ->where('SMS_RESPONSE_CODE', '000')
-                ->where('SMS_Status_Delivery', '#DELIVRD')
+                ->where(function ($query) {
+                    $query->where('SMS_Status_Delivery', 'DELIVRD');
+                    $query->orWhere('SMS_Status_Delivery', 'SUBMITTED');
+                })
                 ->count();
 
             $SuccessUndeliver = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
                 ->where('SMS_RESPONSE_CODE', '000')
-                ->where('SMS_Status_Delivery', '#UNDELIV')
+                ->where('SMS_Status_Delivery', 'UNDELIV')
                 ->count();
 
             $SuccessStatusUnknown = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')
                 ->select('SMS_ID', 'SMS_RESPONSE_MSG_ID', 'SMS_Status_Delivery')
                 ->where('SMS_RESPONSE_CODE', '000')
-                ->where('SMS_Status_Delivery', '#StatusUnknown')
+                ->where(function ($query) {
+                    $query->where('SMS_Status_Delivery', '#StatusUnknown');
+                    $query->orWhere('SMS_Status_Delivery', 'UNKNOWN');
+                })
                 ->count();
 
             $SuccessWaitCheck = DB::connection('sqlsrv_HPCOM7')->table('dbo.LOG_SEND_SMS')

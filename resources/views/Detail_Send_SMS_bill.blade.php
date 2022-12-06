@@ -203,6 +203,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-auto col-md-6 col-lg-3">
+                            <div class="text-left">
+                                <label>StatusSender</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select class="form-select form-select-sm" aria-label="Default select example"
+                                        id="select_StatusSender">
+                                        <option value="" data-txt='' selected>ทั้งหมด</option>
+                                        <option value="DELIVRD" data-txt='DELIVRD'>Devilery</option>
+                                        <option value="UNDELIV" data-txt='UNDELIV'>Undeviler</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -755,10 +770,10 @@
             get_form_search(url, num_page);
         });
 
-        function changPage(page, iurl , last_page) {
-            if (page != parseInt(page, 10)){
+        function changPage(page, iurl, last_page) {
+            if (page != parseInt(page, 10)) {
                 page = 1;
-            }else if(page > last_page){
+            } else if (page > last_page) {
                 page = last_page
             }
             let url = iurl + '?page=' + page;
@@ -783,6 +798,7 @@
             $("#input_type_txt_search").removeAttr('placeholder');
             $("#input_type_txt_search").attr('disabled', 'disabled')
             $('#select_search_col').val('');
+            $('#select_StatusSender').val('');
             $('#input_txt_search_col').val('');
             $("#input_txt_search_col").removeAttr('placeholder');
             $("#input_txt_search_col").attr('disabled', 'disabled')
@@ -800,7 +816,7 @@
             $('#div_datepicker_end').hide();
 
             get_list_data(url, num_page, date_first = null, date_last = null, type = null, type_search =
-                null, status = null, quick_select = null, quick_text = null)
+                null, status = null, quick_select = null, quick_text = null, StatusSender = null)
         })
 
 
@@ -861,14 +877,16 @@
                     '#input_txt_search_col').val();
             }
 
+            let StatusSender = $('#select_StatusSender').val() == '' ? null : $('#select_StatusSender').val();
+
             // console.log(type_search)
             get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date,
-                quick_select, quick_text)
+                quick_select, quick_text, StatusSender)
         }
 
 
         function get_list_data(url, num_page, date_first, date_last, type, type_search, status, due_date,
-            quick_select, quick_text) {
+            quick_select, quick_text, StatusSender) {
             if (typeof(num_page) == "undefined" && num_page == null) {
                 num_page = 10;
             }
@@ -895,6 +913,7 @@
                             quick_select : null,
                         quick_text: typeof(quick_text) != "undefined" || quick_text != null ? quick_text :
                             null,
+                        StatusSender: typeof(StatusSender) != "undefined" || StatusSender != null ? StatusSender : null,
                     }
                 }).then(function(response) {
                     // console.log(response.data);
@@ -974,19 +993,23 @@
                     // })
                     // $('#page_num_old').html(html_pageOld)
 
-                    $('#txt_viewof').text(`View ${response.data.data.from} - ${response.data.data.to} of ${response.data.data.total}`)
+                    $('#txt_viewof').text(
+                        `View ${response.data.data.from} - ${response.data.data.to} of ${response.data.data.total}`
+                        )
 
                     $('#page_num').html(html_page)
 
                     document.querySelector('#page_input').addEventListener('keypress', function(e) {
                         if (e.key === 'Enter') {
                             // code for enter
-                            changPage($('#page_input').val(), response.data.data.path, response.data.data.last_page)
+                            changPage($('#page_input').val(), response.data.data.path, response.data
+                                .data.last_page)
                         }
                     });
 
                     html = '';
                     item = response.data.data.data;
+                    var TypeStatus = ["DELIVRD", "SUBMITTED"];
                     item.forEach((item, index) => {
                         html += `
                         <tr>
@@ -1000,9 +1023,9 @@
                             <td scope="col">${item.TRANSECTION_ID  == null ? '-' : item.TRANSECTION_ID}</td>
                             <td scope="col">${item.DUE_DATE  == null ? '-' : format_date(item.DUE_DATE)}</td>
                             <td scope="col"><span class="${item.SMS_RESPONSE_CODE == '000' ? 'text-success' : 'text-danger'}"> ${item.SMS_RESPONSE_MESSAGE} </span></td>
-                            <td scope="col">${item.SMS_RESPONSE_JOB_ID == null ? '-' : item.SMS_RESPONSE_JOB_ID}</td>
+                            // <td scope="col">${item.SMS_RESPONSE_JOB_ID == null ? '-' : item.SMS_RESPONSE_JOB_ID}</td>
                             <td scope="col">${format_date(item.SEND_DATE)}  ${item.SEND_TIME.split('.')[0]}</td>
-                            <td scope="col"><span class="${item.SMS_Status_Delivery == '#DELIVRD' ? 'text-success' : 'text-danger'}"> ${item.SMS_Status_Delivery  == null ? '-' : item.SMS_Status_Delivery} </span></td>
+                            <td scope="col"><span class="${ TypeStatus.includes(item.SMS_Status_Delivery) ? 'text-success' : 'text-danger'}"> ${item.SMS_Status_Delivery  == null ? '-' : item.SMS_Status_Delivery} </span></td>
                             <td scope="col"><button type="button" id="btn_sms_deatail" class="btn btn-info btn-sm text-white">Detail</button></td>
                         </tr>
                         `
