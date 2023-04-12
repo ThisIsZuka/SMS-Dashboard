@@ -7,15 +7,19 @@
     "require": {
         "php": "^7.3|^8.0",
         "arcanedev/log-viewer": "^8.3",
+        "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
+        "league/flysystem-sftp": "~1.0",
+        "milon/barcode": "^10.0",
+        "picqer/php-barcode-generator": "^2.2",
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "rbdwllr/reallysimplejwt": "^3.1",
+        "simplesoftwareio/simple-qrcode": "~4",
         "webpatser/laravel-uuid": "4.0"
     },
     "require-dev": {

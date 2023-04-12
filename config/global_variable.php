@@ -12,4 +12,6 @@ return [
     'MAILBIT_APIKey' => env('MAILBIT_APIKey'),
     'MAILBIT_ClientID' => env('MAILBIT_ClientID'),
     'MAILBIT_SenderId' => env('MAILBIT_SenderId'),
+
+    'NIPAMAIL_TokenKey' => env('NIPAMAIL_TokenKey'),
 ];

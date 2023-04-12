@@ -177,6 +177,7 @@ return [
 
 
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        Milon\Barcode\BarcodeServiceProvider::class,
     ],
 
     /*

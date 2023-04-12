@@ -53,6 +53,29 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'public_uploads' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/',
+        ],
+
+        'sftp_K2_UAT' => [
+            'driver' => 'sftp',
+            'host' => '192.168.43.203',
+            'port' => 22,
+            'username' => 'user_ssh',
+            'password' => 'com7#22321',
+            'root' => '/',
+        ],
+
+        'sftp_K2_PRD' => [
+            'driver' => 'sftp',
+            'host' => env('SFTP_HOST'),
+            'port' => 22,
+            'username' => env('SFTP_USER'),
+            'password' => env('SFTP_PASS'),
+            'root' => '/',
+        ],
+
     ],
 
     /*

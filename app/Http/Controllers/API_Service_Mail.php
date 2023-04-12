@@ -9,97 +9,88 @@ use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Exception;
+use stdClass;
+
+use App\Jobs\Job_QueuesEmail;
 
 class API_Service_Mail extends BaseController
 {
-    public function PostRequest_Mail()
-    {
-        try {
 
-            // $_data = array(
-            //     // 'accept_token' => 'NPAPP-W0GqDACGulzhYmaWknroIftEd1k1K2xU8EXHP3zQo4OrDxYZvpMPO9eI5ybZsLyJvTgUchnd7S25NwKQJm8RNqAubTiMp370210me32tVFsghvyJ07MY4nWoSXHDcPEwZ6ArNTj5pRalifdIbOqCk870',
-            //     'from_email' => 'ufund@comseven.com',
-            //     'from_name' => 'UFUND',
-            //     'to' => 'kittisak.u@comseven.com',
-            //     'subject' => 'Test Ufund',
-            //     'message' => '$htmlTxt',
-            //     // 'body'=> '[fname] [lname]',
-            //     // 'template_id' => 4231,
-            // );
-            // // echo '<pre>' . var_export($_data, true) . '</pre>';
-            // $payload = '';
-            // $eol = "\r\n";
-            // $boundary = 'WebKitFormBoundary7MA4YWxkTrZu0gW';
-            // foreach ($_data as $name => $content) {
-            //     $payload .= "------" . $boundary . $eol . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol . $content . $eol;
-            // }
-            // $payload = (array("message"=> $_data));
-            // dd($payload);
+    public function Job_SendMail($req){
 
-            $obj = new \StdClass();
-            $obj->fname = 'Test';
-            $obj->lname = 'Test';
-            $obj->URL = 'https://www.ufundportal.com';
-
-
-            $_data2 = new \StdClass();
-            $_data2->from_name = 'UFUND';
-            $_data2->from_email = 'info@thunderfinfin.com';
-            $_data2->to = 'c15suchart.si@gmail.com';
-            $_data2->subject = 'Test UFUND';
-            // $_data2->message = '$htmlTxt <a href="www.ufundportal.com"> คลิ๊ก </a>';
-            $_data2->parameters = $obj;
-            $_data2->template_id = 4231;
-            $_data2->disable_unsubscribe = 'true';
-            // dd($_data2);
-            // dd(json_encode($_data2));
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://app-x.nipamail.com/v1.0/transactional/post?accept_token=NPAPP-W0GqDACGulzhYmaWknroIftEd1k1K2xU8EXHP3zQo4OrDxYZvpMPO9eI5ybZsLyJvTgUchnd7S25NwKQJm8RNqAubTiMp370210me32tVFsghvyJ07MY4nWoSXHDcPEwZ6ArNTj5pRalifdIbOqCk870",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                // CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"from_name\"\r\n\r\nThaksinai Kondee\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"from_email\"\r\n\r\nkittisak.u@comseven.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"to\"\r\n\r\nkittisak.u@comseven.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"subject\"\r\n\r\nร่วมฉลอง ครบรอบการก่อตั้ง บริษัท Nipa technology วันนี้ เวลา 18:00 น.\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\ncontent1\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"reply_email\"\r\n\r\nse55660159@gmail.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"reply_name\"\r\n\r\nThakweb.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
-                CURLOPT_POSTFIELDS => json_encode($_data2),
-                CURLOPT_HTTPHEADER => array(
-                    "Content-Type: application/json",
-                    "Accept: application/json",
-                ),
-                // CURLOPT_HTTPHEADER => array(
-                //     "cache-control: no-cache",
-                //     "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
-                // ),
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-            ));
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            // $this->response['response'] = json_decode($response);
-
-            if ($err) {
-                // echo "cURL Error #:" . $err;
-                dump("cURL Error #:" . $err);
-            } else {
-                // echo $response;
-                $res = json_decode($response);
-                dd($res);
-            }
-        } catch (Exception $e) {
-            $return_data = new \stdClass();
-
-            $return_data->code = '000000';
-            $return_data->message =  $e->getMessage();
-
-            return $return_data;
+        $list = (array_chunk($req,5000));
+        foreach($list as $key => $val){
+            $message = $this->setupData($val);
+            Job_QueuesEmail::dispatch($message)->onQueue('site_main_email');
         }
+        // dd(count($list));
     }
+
+    public function API_HTTP($url, $_data)
+    {
+        $response = Http::withHeaders([
+            'content-type' => 'application/json',
+        ])->post($url, $_data);
+        $resData =  $response->body();
+
+        return $resData;
+    }
+
+    public function PostRequest_Mail_V2()
+    {
+
+        $list_sendSMS = DB::connection('sqlsrv_HPCOM7')->select(DB::connection('sqlsrv_HPCOM7')->raw("exec SP_Get_Invoice_SMS  @DateInput = '2023-01-01' "));
+
+        $message = $this->setupData($list_sendSMS);
+
+        $res = $this->API_HTTP("https://app-a.nipamail.com/v2/transactional/multipost?accept_token=" . ENV('NIPAMAIL_TokenKey'), $message);
+
+        $json_res = json_decode($res);
+        dd($json_res);
+    }
+
+
+    function Get_Name($name)
+    {
+        $clean_name = trim(preg_replace('/^(นางสาว|นาย|นาง)/u', '', $name));
+
+        $fname = explode(" ", $clean_name)[0];
+        $lname = explode(" ",  $clean_name)[1];
+
+        return [$fname, $lname];
+    }
+
+
+    function setupData($list)
+    {
+        $arr_msg = [];
+
+        foreach ($list as $key => $val) {
+            list($fname, $lname) = $this->Get_Name($val->CUSTOMER_NAME);
+
+            $obj_cus = new stdClass();
+            $obj_cus->fname = $fname;
+            $obj_cus->lname = $lname;
+            $obj_cus->URL = $val->INV_URL;
+
+            $msg = new stdClass();
+            $msg->from_name = "UFUND";
+            $msg->from_email = "info@Thunderfinfin.com";
+            $msg->to = $val->EMAIL;
+            // $msg->to = "kittisak.u@comseven.com";
+            $msg->parameters = $obj_cus;
+
+            array_push($arr_msg, $msg);
+        }
+
+        $data_array = array(
+            'subject' => 'ใบแจ้งชำระค่างวดเช่าซื้อ UFUND',
+            'template_id' => '4231',
+            'message' => $arr_msg,
+        );
+        return $data_array;
+    }
+
 }

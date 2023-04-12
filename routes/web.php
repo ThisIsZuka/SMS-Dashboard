@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin_Detail_SMS;
 use App\Http\Controllers\API_SCB;
 use App\Http\Controllers\API_Sandbox_SCB;
 
+use App\Http\Controllers\Convert_QR_BarCode;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -108,12 +110,12 @@ Route::get('/checkSending', [API_Service_SMS::class, 'check_sending']);
 
 Route::get('/TestSending', [API_Service_SMS::class, 'TestSending']);
 
-
+// Route::get('/TestMail', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
 
 Route::middleware(['basicAuth'])->group(function () {
     //All the routes are placed in here
     // Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice']);
-    Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
+    Route::get('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
 });
 
 Route::get('/Queue_Job', [Queue_Job::class, 'GetQueue']);
@@ -121,7 +123,7 @@ Route::get('/Queue_Job', [Queue_Job::class, 'GetQueue']);
 Route::get('/test_send_SMS', [API_Service_SMS::class, 'test_send_SMS']);
 
 // Mail Nipamail API
-Route::get('/test_Mail', [API_Service_Mail::class, 'PostRequest_Mail']);
+Route::get('/test_Mail', [API_Service_Mail::class, 'PostRequest_Mail_V2']);
 
 // Route::get('/conf_sms', [API_Service_Mail::class, 'conf_sms_send']);
 
@@ -156,3 +158,7 @@ Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_
 
 
 Route::get('/test_new', [API_Service_SMS::class, 'TestSending']);
+
+
+Route::get('/gen_inv_barcode', [Convert_QR_BarCode::class, 'generateBarcode']);
+// Route::get('/get_inv', [Convert_QR_BarCode::class, 'MainReq']);

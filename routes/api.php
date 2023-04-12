@@ -55,6 +55,9 @@ Route::group(['middleware' => ['JWT_Token']], function () {
 });
 
 
+Route::post('/post_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
+
+
 // API SCB
 // Route::post('/Payment_Confirm', [API_Sandbox_SCB::class, 'SCB_Callback_Payment_Confirm']);
 Route::post('/Payment_Confirm', [API_SCB::class, 'SCB_Callback_Payment_Confirm']);

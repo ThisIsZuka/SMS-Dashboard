@@ -110,7 +110,7 @@ class API_SCB extends BaseController
                 ->select('SEQ_ID', 'PAYMENT_REF1', 'MOBILE_NO', 'PREMIUM_AMT', 'APPL_NO')
                 ->where('SEQ_ID', $data['SEQ_ID'])
                 ->get();
-
+            
             // dd(count($DB_DATA));
             if (count($DB_APPL_TRANS) == 0) {
                 return response()->json(array(
@@ -152,9 +152,7 @@ class API_SCB extends BaseController
                 'QR_PAY_DOWN' => '<file><name>QR_Down_' . $DB_APPL_TRANS[0]->PAYMENT_REF1 . '</name><content>' . $res_data->data->qrImage . '</content></file>',
                 'UUID' => $uuid,
             ]);
-            // var_dump($uuid);
-            // dd($SEQ_ID);
-            // dd($res_data);
+
 
             $phone = '66' . mb_substr($DB_APPL_TRANS[0]->MOBILE_NO, 1);
             // $phone = '66804817163';
