@@ -11,6 +11,8 @@ use App\Http\Controllers\API_Sandbox_SCB;
 
 use App\Http\Controllers\API_SCB_Bill_H2H;
 
+use App\Http\Controllers\Convert_QR_BarCode;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -65,3 +67,6 @@ Route::post('/Payment_Confirm', [API_SCB::class, 'SCB_Callback_Payment_Confirm']
 
 // Bill Payment
 Route::post('/SCBbillPayment', [API_SCB_Bill_H2H::class, 'SCB_Routing']);
+
+
+Route::get('/gen_inv_barcode', [Convert_QR_BarCode::class, 'generateBarcode']);

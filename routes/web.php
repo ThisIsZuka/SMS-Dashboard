@@ -160,5 +160,5 @@ Route::get('/SCB_TransactionInquiry', [API_SCB::class, 'SCB_Payment_Transaction_
 Route::get('/test_new', [API_Service_SMS::class, 'TestSending']);
 
 
-Route::get('/gen_inv_barcode', [Convert_QR_BarCode::class, 'generateBarcode']);
+// Route::get('/gen_inv_barcode', [Convert_QR_BarCode::class, 'generateBarcode']);
 // Route::get('/get_inv', [Convert_QR_BarCode::class, 'MainReq']);
