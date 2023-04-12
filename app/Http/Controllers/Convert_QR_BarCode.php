@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Carbon;
@@ -33,18 +34,21 @@ class Convert_QR_BarCode extends BaseController
     {
     }
 
-    public function generateBarcode()
+    public function generateBarcode(Request $request)
     {
         try {
             // dd($this->DateNow);
+
+            $data = $request->all();
+            $DUE_DATE = $data['DUE_DATE'];
+
             $TTP_INV_BARCODE = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_INV_BARCODE')
-                ->select('*')
-                ->where('INV_DATE', '2023-01-01')
-                ->limit(2)
+                ->select('SEQ_ID')
+                ->where('DUE_DATE', $DUE_DATE)
                 ->get();
-            // dd($TTP_INV_BARCODE);
+
             foreach ($TTP_INV_BARCODE as $key => $val) {
-                Job_QueuesConvertQR_Barcode::dispatch($val, $this->DateNow)->onQueue('site_main');
+                Job_QueuesConvertQR_Barcode::dispatch($val->SEQ_ID, $this->DateNow)->onQueue('site_main');
             }
 
             return 'success';
