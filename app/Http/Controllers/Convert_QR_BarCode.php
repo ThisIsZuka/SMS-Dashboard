@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Milon\Barcode\Facades\DNS1DFacade as DNS1D;
@@ -40,11 +41,12 @@ class Convert_QR_BarCode extends BaseController
             // dd($this->DateNow);
 
             $data = $request->all();
-            $DUE_DATE = $data['DUE_DATE'];
+            // $DUE_DATE = $data['DUE_DATE'];
 
             $TTP_INV_BARCODE = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_INV_BARCODE')
                 ->select('SEQ_ID')
                 ->where('DUE_DATE', $DUE_DATE)
+                // ->limit(1)
                 ->get();
 
             foreach ($TTP_INV_BARCODE as $key => $val) {
@@ -53,7 +55,7 @@ class Convert_QR_BarCode extends BaseController
 
             return 'success';
         } catch (Exception $e) {
-            dd($e->getMessage());
+            Log::error('Caught exception: ' . $e->getMessage());
         }
     }
 }

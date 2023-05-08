@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -82,14 +83,14 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
                     'UPDATE_BY' => 'SYSTEM',
                 ]);
         } catch (Exception $e) {
-            return $e->getMessage();
+            Log::error('Caught exception Convert_ImgInv: ' . $e->getMessage());
         }
     }
 
     function GenQR_Code($val, $gs1Data)
     {
         try {
-            $name_QR = "{$val->SEQ_ID}_QR_Code_{$val->INV_NO}.png";
+            $name_QR = "{$val->SEQ_ID}_QrCode_{$val->INV_NO}.png";
 
             // Generate the QR-Code
             $qrCode = QrCode::encoding('UTF-8')
@@ -104,7 +105,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
 
             return "<img src={$this->prdURL}/INV_Gen_{$this->Date}/{$name_QR}></img>";
         } catch (Exception $e) {
-            return '';
+            Log::error('Caught exception GenQR_Code: ' . $e->getMessage());
         }
     }
 
@@ -122,7 +123,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
 
             return "<img src={$this->prdURL}/INV_Gen_{$this->Date}/{$name_Barcode}></img>";
         } catch (Exception $e) {
-            return '';
+            Log::error('Caught exception GenBarcode: ' . $e->getMessage());
         }
     }
 }

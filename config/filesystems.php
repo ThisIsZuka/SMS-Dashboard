@@ -70,7 +70,7 @@ return [
         'sftp_K2_PRD' => [
             'driver' => 'sftp',
             'host' => env('SFTP_HOST'),
-            'port' => 22,
+            'port' => env('SFTP_PORT'),
             'username' => env('SFTP_USER'),
             'password' => env('SFTP_PASS'),
             'root' => '/',
