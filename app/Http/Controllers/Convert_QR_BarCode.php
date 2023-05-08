@@ -41,7 +41,7 @@ class Convert_QR_BarCode extends BaseController
             // dd($this->DateNow);
 
             $data = $request->all();
-            // $DUE_DATE = $data['DUE_DATE'];
+            $DUE_DATE = $data['DUE_DATE'];
 
             $TTP_INV_BARCODE = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_INV_BARCODE')
                 ->select('SEQ_ID')
