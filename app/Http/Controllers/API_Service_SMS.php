@@ -396,6 +396,8 @@ class API_Service_SMS extends BaseController
         $phone = '66' . mb_substr($phone_remove_special, 1);
         // $phone = '66957498908';
 
+        $user_send = isset($data['USER']) ? $data['USER'] : null;
+
         try {
 
             $message_sms_tel = str_replace("[tel]", $list_sendSMS[0]->phone_BRANCH, $list_sendSMS[0]->MESSAGE);
@@ -454,6 +456,7 @@ class API_Service_SMS extends BaseController
                 'SMS_RESPONSE_MSG_ID' => $MSG_ID,
                 'SMS_TEXT_MESSAGE' => $data_arry['message'],
                 'SMS_CREDIT_USED' => $SumCredit,
+                'USER_SEND' => $user_send,
             ]);
 
 
@@ -483,6 +486,7 @@ class API_Service_SMS extends BaseController
                 'SEND_Phone' => $phone,
                 'CONTRACT_ID' => $list_sendSMS[0]->Contract_id,
                 'SMS_TEXT_MESSAGE' => $e->getMessage(),
+                'USER_SEND' => $user_send,
             ]);
 
             $return_data->Code = '000000';
