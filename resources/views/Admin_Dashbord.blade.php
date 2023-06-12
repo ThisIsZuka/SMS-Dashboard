@@ -6,59 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="{{ asset('public/images/icon.jpg') }}" rel="icon" type="image/gif">
+    <link href="{{ asset('images/icon.jpg') }}" rel="icon" type="image/gif">
     <title>SMS Admin</title>
 
     <!-- Font Awesome -->
-    <link href="{{ asset('public/assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/fontawesome/css/all.min.css') }}" rel="stylesheet" />
 
     {{-- bootstrap --}}
-    <link href="{{ asset('public/assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('public/assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
+    <link href="{{ asset('assets/bootstrap-5.1.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('assets/bootstrap-5.1.3/js/bootstrap.min.js') }}"></script>
 
 
     {{-- JQuery --}}
-    <script src="{{ asset('public/assets/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('assets/jquery-3.5.1.min.js') }}"></script>
 
     {{-- axios --}}
-    <script src="{{ asset('public/assets/axios.min.js') }}"></script>
+    <script src="{{ asset('assets/axios.min.js') }}"></script>
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> --}}
 
     {{-- SnackBar --}}
-    <link href="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('public/assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
+    <link href="{{ asset('assets/SnackBar-master/dist/snackbar.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('assets/SnackBar-master/dist/snackbar.min.js') }}"></script>
 
 
     {{-- Cookie --}}
-    <script src="{{ asset('public/assets/js.cookie.js') }}"></script>
+    <script src="{{ asset('assets/js.cookie.js') }}"></script>
 
     {{-- CSS --}}
-    <link rel="stylesheet" href="{{ asset('public/css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/Main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Main.css') }}">
 
 
     {{-- DASHBOARD --}}
 
     <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" />
     <!-- Custom CSS -->
-    <link href={{ asset('public/monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
+    <link href={{ asset('monster-html/plugins/chartist/dist/chartist.min.css') }} rel="stylesheet">
     <!-- Custom CSS -->
-    <link href={{ asset('public/monster-html/css/style.min.css') }} rel="stylesheet">
+    <link href={{ asset('monster-html/css/style.min.css') }} rel="stylesheet">
 
 
-    <script src={{ asset('public/monster-html/js/app-style-switcher.js') }}></script>
+    <script src={{ asset('monster-html/js/app-style-switcher.js') }}></script>
     <!--Wave Effects -->
-    <script src={{ asset('public/monster-html/js/waves.js') }}></script>
+    <script src={{ asset('monster-html/js/waves.js') }}></script>
     <!--Menu sidebar -->
-    <script src={{ asset('public/monster-html/js/sidebarmenu.js') }}></script>
+    <script src={{ asset('monster-html/js/sidebarmenu.js') }}></script>
     <!--Custom JavaScript -->
-    <script src={{ asset('public/monster-html/js/custom.js') }}></script>
+    <script src={{ asset('monster-html/js/custom.js') }}></script>
     <!--This page JavaScript -->
-    <script src={{ asset('public/monster-html/js/pages/dashboards/dashboard1.js') }}></script>
+    <script src={{ asset('monster-html/js/pages/dashboards/dashboard1.js') }}></script>
     <!--flot chart-->
-    <script src={{ asset('public/monster-html/plugins/flot/jquery.flot.js') }}></script>
-    <script src={{ asset('public/monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
+    <script src={{ asset('monster-html/plugins/flot/jquery.flot.js') }}></script>
+    <script src={{ asset('monster-html/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js') }}></script>
 
 
     {{-- Pusher Broadcast --}}

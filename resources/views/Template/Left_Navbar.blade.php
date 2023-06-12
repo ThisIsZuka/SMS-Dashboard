@@ -22,7 +22,7 @@
                 <b class="logo-icon text-center">
                     <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                     <!-- Dark Logo icon -->
-                    <img src={{ asset('public/images/UFUND.png') }} alt="homepage" class="dark-logo ufound-Navbar-Logo" />
+                    <img src={{ asset('images/UFUND.png') }} alt="homepage" class="dark-logo ufound-Navbar-Logo" />
 
                 </b>
             </a>
