@@ -60,10 +60,10 @@ return [
 
         'sftp_K2_UAT' => [
             'driver' => 'sftp',
-            'host' => '192.168.43.203',
-            'port' => 22,
-            'username' => 'user_ssh',
-            'password' => 'com7#22321',
+            'host' => env('SFTP_UAT_HOST'),
+            'port' => env('SFTP_UAT_PORT'),
+            'username' => env('SFTP_UAT_USER'),
+            'password' => env('SFTP_UAT_PASS'),
             'root' => '/',
         ],
 

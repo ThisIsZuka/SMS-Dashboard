@@ -46,6 +46,7 @@ class Convert_QR_BarCode extends BaseController
             $TTP_INV_BARCODE = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_INV_BARCODE')
                 ->select('SEQ_ID')
                 ->where('DUE_DATE', $DUE_DATE)
+                ->where('CRT_FLG', '!=' , 'Y')
                 // ->limit(1)
                 ->get();
 

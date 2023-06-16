@@ -116,7 +116,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
             $name_Barcode = "{$val->SEQ_ID}_Barcode_{$val->INV_NO}.png";
 
             // Generate the barcode
-            $barcode =  DNS1D::getBarcodePNG($gs1Data, 'C128', 1.7, 50, array(0, 0, 0), false);
+            $barcode =  DNS1D::getBarcodePNG($gs1Data, 'C128', 1, 50, array(0, 0, 0), false);
 
             // Storage::disk('public_uploads')->put("INV_Gen_{$this->DateNow}/Barcode{$val->SEQ_ID}_{$val->INV_NO}.png", base64_decode($barcode));
             Storage::disk('sftp_K2_PRD')->put("INV_Gen_{$this->Date}/{$name_Barcode}", base64_decode($barcode));
