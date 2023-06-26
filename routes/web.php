@@ -115,7 +115,7 @@ Route::get('/TestSending', [API_Service_SMS::class, 'TestSending']);
 Route::middleware(['basicAuth'])->group(function () {
     //All the routes are placed in here
     // Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice']);
-    Route::get('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
+    Route::any('/send_SMS_Invoice', [API_Service_SMS::class, 'submit_send_SMS_Invoice_optimize']);
 });
 
 Route::get('/Queue_Job', [Queue_Job::class, 'GetQueue']);

@@ -12,16 +12,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Exception;
 use stdClass;
+use Illuminate\Support\Facades\Log;
 
 use App\Jobs\Job_QueuesEmail;
 
 class API_Service_Mail extends BaseController
 {
 
-    public function Job_SendMail($req){
+    public function Job_SendMail($req)
+    {
 
-        $list = (array_chunk($req,5000));
-        foreach($list as $key => $val){
+        $list = (array_chunk($req, 5000));
+        foreach ($list as $key => $val) {
             $message = $this->setupData($val);
             Job_QueuesEmail::dispatch($message)->onQueue('site_main_email');
         }
@@ -68,21 +70,25 @@ class API_Service_Mail extends BaseController
         $arr_msg = [];
 
         foreach ($list as $key => $val) {
-            list($fname, $lname) = $this->Get_Name($val->CUSTOMER_NAME);
+            try {
+                list($fname, $lname) = $this->Get_Name($val->CUSTOMER_NAME);
 
-            $obj_cus = new stdClass();
-            $obj_cus->fname = $fname;
-            $obj_cus->lname = $lname;
-            $obj_cus->URL = $val->INV_URL;
-
-            $msg = new stdClass();
-            $msg->from_name = "UFUND";
-            $msg->from_email = "info@Thunderfinfin.com";
-            $msg->to = $val->EMAIL;
-            // $msg->to = "kittisak.u@comseven.com";
-            $msg->parameters = $obj_cus;
-
-            array_push($arr_msg, $msg);
+                $obj_cus = new stdClass();
+                $obj_cus->fname = $fname;
+                $obj_cus->lname = $lname;
+                $obj_cus->URL = $val->INV_URL;
+    
+                $msg = new stdClass();
+                $msg->from_name = "UFUND";
+                $msg->from_email = "info@Thunderfinfin.com";
+                $msg->to = $val->EMAIL;
+                // $msg->to = "kittisak.u@comseven.com";
+                $msg->parameters = $obj_cus;
+    
+                array_push($arr_msg, $msg);
+            } catch (Exception $e) {
+                Log::error('Setup Mail Data Caught exception: ' . $e->getMessage());
+            }
         }
 
         $data_array = array(
@@ -92,5 +98,4 @@ class API_Service_Mail extends BaseController
         );
         return $data_array;
     }
-
 }
