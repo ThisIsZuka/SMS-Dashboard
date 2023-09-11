@@ -25,6 +25,8 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 2;
+    public $backoff = 15;
 
     public $SEQ_ID;
     public $Date;
@@ -53,7 +55,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
     {
         $SEQ_ID = $this->SEQ_ID;
         $this->Convert_ImgInv($SEQ_ID);
-        sleep(1);
+        // sleep(5);
     }
 
     function Convert_ImgInv($SEQ_ID)
@@ -106,6 +108,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
             return "<img src={$this->prdURL}/INV_Gen_{$this->Date}/{$name_QR}></img>";
         } catch (Exception $e) {
             Log::error('Caught exception GenQR_Code: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -124,6 +127,7 @@ class Job_QueuesConvertQR_Barcode implements ShouldQueue
             return "<img src={$this->prdURL}/INV_Gen_{$this->Date}/{$name_Barcode}></img>";
         } catch (Exception $e) {
             Log::error('Caught exception GenBarcode: ' . $e->getMessage());
+            throw $e;
         }
     }
 }
