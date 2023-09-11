@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
         Commands\Check_SMS_Deliver::class,
+        Commands\CleanOldLogEntries::class,
     ];
 
     /**
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('cron:CheckSMSDeliver')->daily();
+        $schedule->command('log:clean')->daily();
         // $schedule->command('cron:CheckSMSDeliver')->everyMinute();
     }
 
