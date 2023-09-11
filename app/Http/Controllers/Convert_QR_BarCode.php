@@ -41,7 +41,7 @@ class Convert_QR_BarCode extends BaseController
             // dd($this->DateNow);
 
             $data = $request->all();
-            $DUE_DATE = $data['DUE_DATE'];
+            // $DUE_DATE = $data['DUE_DATE'];
             $INV_DATE = $data['INV_DATE'];
 
             $TTP_INV_BARCODE = DB::connection('sqlsrv_HPCOM7')->table('dbo.TTP_INV_BARCODE')
@@ -58,6 +58,7 @@ class Convert_QR_BarCode extends BaseController
             return 'success';
         } catch (Exception $e) {
             Log::error('Caught exception: ' . $e->getMessage());
+            return $e->getMessage();
         }
     }
 }
