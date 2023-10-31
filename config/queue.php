@@ -85,9 +85,10 @@ return [
     */
 
     'failed' => [
-        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'sqlsrv_HPCOM7'),
-        'table' => 'failed_jobs',
+        'driver' => env('QUEUE_FAILED_DRIVER', 'log'),
+        // 'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+        // 'database' => env('DB_CONNECTION', 'sqlsrv_HPCOM7'),
+        // 'table' => 'failed_jobs',
     ],
 
 ];

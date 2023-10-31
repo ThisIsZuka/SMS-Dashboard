@@ -88,6 +88,7 @@ class API_Service_Mail extends BaseController
                 array_push($arr_msg, $msg);
             } catch (Exception $e) {
                 Log::error('Setup Mail Data Caught exception: ' . $e->getMessage());
+                continue;
             }
         }
 

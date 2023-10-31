@@ -81,7 +81,7 @@ return [
         ],
 
         'sqlsrv_HPCOM7' => [
-            'driver' => env('DB_CONNECTION'),
+            'driver' => 'sqlsrv',
             // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
@@ -96,7 +96,7 @@ return [
         ],
 
         'sqlsrv_K2' => [
-            'driver' => env('DB_CONNECTION_SECOND'),
+            'driver' => 'sqlsrv',
             // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_SECOND', 'localhost'),
             'port' => env('DB_PORT_SECOND', '1433'),

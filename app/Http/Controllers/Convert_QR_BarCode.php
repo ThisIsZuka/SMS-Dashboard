@@ -52,7 +52,7 @@ class Convert_QR_BarCode extends BaseController
                 ->get();
 
             foreach ($TTP_INV_BARCODE as $key => $val) {
-                Job_QueuesConvertQR_Barcode::dispatch($val->SEQ_ID, $this->DateNow)->onQueue('site_main');
+                Job_QueuesConvertQR_Barcode::dispatch($val->SEQ_ID, $this->DateNow)->onQueue('site_convert_img');
             }
 
             return 'success';
