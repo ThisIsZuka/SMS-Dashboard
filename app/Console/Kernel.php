@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\Check_SMS_Deliver::class,
         Commands\CleanOldLogEntries::class,
         Commands\ClearSMSDatabase::class,
+        Commands\PerformanceServer::class,
     ];
 
     /**
@@ -28,10 +29,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('cron:CheckSMSDeliver')->daily();
-        $schedule->command('log:clean')->daily();
-        $schedule->command('cron:ClearSMSDatabase')->daily();
+        // $schedule->command('cron:CheckSMSDeliver')->daily();
+        // $schedule->command('log:clean')->daily();
+        // $schedule->command('cron:ClearSMSDatabase')->daily();
         // $schedule->command('cron:CheckSMSDeliver')->everyMinute();
+        $schedule->command('cron:TestPerformanceServer')->everyMinute();
     }
 
     /**

@@ -100,6 +100,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'logPerformance' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/Performance.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

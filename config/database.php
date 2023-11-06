@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlsrv_HPCOM7'),
+    'default' => env('DB_CONNECTION', 'sqlsrv'),
 
     // 'default' => env('DB_CONNECTION', 'sqlsrv'),
 
@@ -80,7 +80,7 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'sqlsrv_HPCOM7' => [
+        'sqlsrv' => [
             'driver' => 'sqlsrv',
             // 'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
